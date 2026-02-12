@@ -1,0 +1,80 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function getUserEmail() {
+      return request.auth.token.email;
+    }
+
+    // Users collection
+    match /users/{userId} {
+      allow read: if isAuthenticated();
+      allow create: if isOwner(userId);
+      allow update: if isOwner(userId);
+      allow delete: if isOwner(userId);
+    }
+
+    // Businesses collection
+    match /businesses/{businessId} {
+      allow read: if true; // Public read
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.owner_uid == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.owner_uid == request.auth.uid;
+    }
+
+    // Volunteer Opportunities collection
+    match /volunteer_opportunities/{oppId} {
+      allow read: if true; // Public read
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+
+    // Volunteer Commitments collection
+    match /volunteer_commitments/{commitmentId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated();
+      allow delete: if isAuthenticated();
+    }
+
+    // Notifications collection
+    match /notifications/{notificationId} {
+      allow read: if isAuthenticated() && resource.data.user_email == getUserEmail();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.user_email == getUserEmail();
+      allow delete: if isAuthenticated() && resource.data.user_email == getUserEmail();
+    }
+
+    // Favorites collection
+    match /favorites/{favoriteId} {
+      allow read: if isAuthenticated() && resource.data.user_uid == request.auth.uid;
+      allow create: if isAuthenticated();
+      allow delete: if isAuthenticated() && resource.data.user_uid == request.auth.uid;
+    }
+
+    // Reviews collection
+    match /reviews/{reviewId} {
+      allow read: if true; // Public read
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.user_uid == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.user_uid == request.auth.uid;
+    }
+
+    // Monthly Availability collection
+    match /monthly_availability/{availabilityId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated();
+      allow update: if isAuthenticated() && resource.data.user_uid == request.auth.uid;
+      allow delete: if isAuthenticated() && resource.data.user_uid == request.auth.uid;
+    }
+  }
+}
