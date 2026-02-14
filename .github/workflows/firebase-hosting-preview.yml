@@ -10,6 +10,7 @@ jobs:
     if: ${{ github.event.pull_request.head.repo.full_name == github.repository }}
     runs-on: ubuntu-latest
     permissions:
+      contents: read
       checks: write
       pull-requests: write
       id-token: write
@@ -39,7 +40,5 @@ jobs:
           workload_identity_provider: projects/722363925527/locations/global/workloadIdentityPools/github-pool/providers/github-provider
           service_account: github-actions-deploy@community-threads-486622-2c2e0.iam.gserviceaccount.com
 
-      - uses: FirebaseExtended/action-hosting-deploy@v0
-        with:
-          repoToken: ${{ secrets.GITHUB_TOKEN }}
-          projectId: community-threads-486622-2c2e0
+      - name: Deploy preview channel
+        run: npx firebase-tools hosting:channel:deploy pr-${{ github.event.pull_request.number }} --project community-threads-486622-2c2e0 --expires 7d
