@@ -7,9 +7,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Plus, Pencil, Trash2, Clock } from "lucide-react";
+import { Plus, Pencil, Trash2, Clock, MapPin, Calendar, Users, Zap, User } from "lucide-react";
+import { format } from "date-fns";
 
 const URGENCY_COLORS = {
   low: "bg-blue-100 text-blue-700",
@@ -18,50 +20,61 @@ const URGENCY_COLORS = {
   urgent: "bg-red-100 text-red-700"
 };
 
+const EMPTY_FORM = {
+  title: "",
+  description: "",
+  skills_needed: "",
+  hours_needed: "",
+  urgency: "medium",
+  status: "open",
+  special_offer: "",
+  slots_needed: 1,
+  min_age: 0,
+  location: "",
+  available_from: "",
+  available_to: "",
+  auto_accept: false
+};
+
 export default function OpportunityManager({ business, opportunities }) {
   const queryClient = useQueryClient();
   const [showDialog, setShowDialog] = useState(false);
   const [editingOpp, setEditingOpp] = useState(null);
-  const [formData, setFormData] = useState({
-    title: "",
-    description: "",
-    skills_needed: "",
-    hours_needed: "",
-    urgency: "medium",
-    status: "open",
-    special_offer: "",
-    slots_needed: 0
-  });
+  const [formData, setFormData] = useState(EMPTY_FORM);
 
   const createMutation = useMutation({
     mutationFn: (data) => entities.VolunteerOpportunity.create({
       ...data,
       business_id: business.id,
       business_name: business.name,
-      skills_needed: data.skills_needed ? data.skills_needed.split(',').map(s => s.trim()) : [],
+      skills_needed: data.skills_needed ? data.skills_needed.split(',').map(s => s.trim()).filter(Boolean) : [],
       hours_needed: data.hours_needed ? parseInt(data.hours_needed) : null,
-      slots_needed: parseInt(data.slots_needed) || 0,
-      slots_filled: 0
+      slots_needed: parseInt(data.slots_needed) || 1,
+      slots_filled: 0,
+      min_age: parseInt(data.min_age) || 0,
+      auto_accept: data.auto_accept
     }),
     onSuccess: () => {
       queryClient.invalidateQueries(['business_opportunities']);
       setShowDialog(false);
-      resetForm();
+      setFormData(EMPTY_FORM);
     }
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => entities.VolunteerOpportunity.update(id, {
       ...data,
-      skills_needed: data.skills_needed ? data.skills_needed.split(',').map(s => s.trim()) : [],
+      skills_needed: data.skills_needed ? data.skills_needed.split(',').map(s => s.trim()).filter(Boolean) : [],
       hours_needed: data.hours_needed ? parseInt(data.hours_needed) : null,
-      slots_needed: parseInt(data.slots_needed) || 0
+      slots_needed: parseInt(data.slots_needed) || 1,
+      min_age: parseInt(data.min_age) || 0,
+      auto_accept: data.auto_accept
     }),
     onSuccess: () => {
       queryClient.invalidateQueries(['business_opportunities']);
       setShowDialog(false);
       setEditingOpp(null);
-      resetForm();
+      setFormData(EMPTY_FORM);
     }
   });
 
@@ -71,19 +84,6 @@ export default function OpportunityManager({ business, opportunities }) {
       queryClient.invalidateQueries(['business_opportunities']);
     }
   });
-
-  const resetForm = () => {
-    setFormData({
-      title: "",
-      description: "",
-      skills_needed: "",
-      hours_needed: "",
-      urgency: "medium",
-      status: "open",
-      special_offer: "",
-      slots_needed: 0
-    });
-  };
 
   const handleEdit = (opp) => {
     setEditingOpp(opp);
@@ -95,7 +95,12 @@ export default function OpportunityManager({ business, opportunities }) {
       urgency: opp.urgency,
       status: opp.status,
       special_offer: opp.special_offer || "",
-      slots_needed: opp.slots_needed || 0
+      slots_needed: opp.slots_needed || 1,
+      min_age: opp.min_age || 0,
+      location: opp.location || "",
+      available_from: opp.available_from || "",
+      available_to: opp.available_to || "",
+      auto_accept: opp.auto_accept || false
     });
     setShowDialog(true);
   };
@@ -109,13 +114,18 @@ export default function OpportunityManager({ business, opportunities }) {
     }
   };
 
+  const isPending = createMutation.isPending || updateMutation.isPending;
+
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
         <h2 className="text-2xl font-bold text-gray-900">Volunteer Opportunities</h2>
-        <Dialog open={showDialog} onOpenChange={setShowDialog}>
+        <Dialog open={showDialog} onOpenChange={(open) => {
+          setShowDialog(open);
+          if (!open) { setEditingOpp(null); setFormData(EMPTY_FORM); }
+        }}>
           <DialogTrigger asChild>
-            <Button className="bg-blue-900 hover:bg-blue-800" onClick={resetForm}>
+            <Button className="bg-blue-900 hover:bg-blue-800" onClick={() => { setEditingOpp(null); setFormData(EMPTY_FORM); }}>
               <Plus className="w-4 h-4 mr-2" />
               Post New Opportunity
             </Button>
@@ -125,29 +135,99 @@ export default function OpportunityManager({ business, opportunities }) {
               <DialogTitle>{editingOpp ? "Edit Opportunity" : "Post New Opportunity"}</DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
+
+              {/* Role / Title */}
               <div>
-                <Label htmlFor="title">Title</Label>
+                <Label htmlFor="title">Role / Title *</Label>
                 <Input
                   id="title"
                   value={formData.title}
                   onChange={(e) => setFormData({...formData, title: e.target.value})}
+                  placeholder="e.g., Event Assistant, Kitchen Helper, Social Media Volunteer"
                   required
                   className="mt-2"
                 />
               </div>
 
+              {/* Description */}
               <div>
-                <Label htmlFor="description">Description</Label>
+                <Label htmlFor="description">Description *</Label>
                 <Textarea
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({...formData, description: e.target.value})}
+                  placeholder="Describe what volunteers will be doing, what to expect, and any requirements..."
                   rows={4}
                   required
                   className="mt-2"
                 />
               </div>
 
+              {/* Location */}
+              <div>
+                <Label htmlFor="location">Volunteer Location / Address</Label>
+                <Input
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) => setFormData({...formData, location: e.target.value})}
+                  placeholder="e.g., 123 Main St, Clarksville, TN (leave blank to use business address)"
+                  className="mt-2"
+                />
+              </div>
+
+              {/* Dates Available */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="available_from">Dates Available: From</Label>
+                  <Input
+                    id="available_from"
+                    type="date"
+                    value={formData.available_from}
+                    onChange={(e) => setFormData({...formData, available_from: e.target.value})}
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="available_to">Dates Available: To</Label>
+                  <Input
+                    id="available_to"
+                    type="date"
+                    value={formData.available_to}
+                    onChange={(e) => setFormData({...formData, available_to: e.target.value})}
+                    className="mt-2"
+                  />
+                </div>
+              </div>
+
+              {/* Volunteers Needed + Min Age */}
+              <div className="grid md:grid-cols-2 gap-4">
+                <div>
+                  <Label htmlFor="slots">Volunteers Needed *</Label>
+                  <Input
+                    id="slots"
+                    type="number"
+                    value={formData.slots_needed}
+                    onChange={(e) => setFormData({...formData, slots_needed: e.target.value})}
+                    min="1"
+                    required
+                    className="mt-2"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="min_age">Minimum Age Requirement</Label>
+                  <Input
+                    id="min_age"
+                    type="number"
+                    value={formData.min_age}
+                    onChange={(e) => setFormData({...formData, min_age: e.target.value})}
+                    min="0"
+                    className="mt-2"
+                  />
+                  <p className="text-xs text-gray-500 mt-1">Set to 0 for no age requirement</p>
+                </div>
+              </div>
+
+              {/* Priority + Status */}
               <div className="grid md:grid-cols-2 gap-4">
                 <div>
                   <Label htmlFor="urgency">Priority</Label>
@@ -166,7 +246,6 @@ export default function OpportunityManager({ business, opportunities }) {
                     </SelectContent>
                   </Select>
                 </div>
-
                 <div>
                   <Label htmlFor="status">Status</Label>
                   <Select
@@ -186,32 +265,19 @@ export default function OpportunityManager({ business, opportunities }) {
                 </div>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-4">
-                <div>
-                  <Label htmlFor="hours">Estimated Hours</Label>
-                  <Input
-                    id="hours"
-                    type="number"
-                    value={formData.hours_needed}
-                    onChange={(e) => setFormData({...formData, hours_needed: e.target.value})}
-                    className="mt-2"
-                  />
-                </div>
-
-                <div>
-                  <Label htmlFor="slots">Number of Volunteers Needed</Label>
-                  <Input
-                    id="slots"
-                    type="number"
-                    value={formData.slots_needed}
-                    onChange={(e) => setFormData({...formData, slots_needed: e.target.value})}
-                    min="0"
-                    className="mt-2"
-                  />
-                  <p className="text-xs text-gray-500 mt-1">Set to 0 for unlimited</p>
-                </div>
+              {/* Estimated Hours */}
+              <div>
+                <Label htmlFor="hours">Estimated Hours per Volunteer</Label>
+                <Input
+                  id="hours"
+                  type="number"
+                  value={formData.hours_needed}
+                  onChange={(e) => setFormData({...formData, hours_needed: e.target.value})}
+                  className="mt-2"
+                />
               </div>
 
+              {/* Skills Needed */}
               <div>
                 <Label htmlFor="skills">Skills Needed (comma-separated)</Label>
                 <Input
@@ -223,8 +289,9 @@ export default function OpportunityManager({ business, opportunities }) {
                 />
               </div>
 
+              {/* Special Offer */}
               <div>
-                <Label htmlFor="offer">Special Offer/Perk (Optional)</Label>
+                <Label htmlFor="offer">Volunteer Perk / Special Offer (Optional)</Label>
                 <Input
                   id="offer"
                   value={formData.special_offer}
@@ -234,16 +301,30 @@ export default function OpportunityManager({ business, opportunities }) {
                 />
               </div>
 
+              {/* Auto-Accept Toggle */}
+              <div className="flex items-center justify-between rounded-lg border border-gray-200 p-4 bg-gray-50">
+                <div>
+                  <p className="font-medium text-gray-900">Auto-Accept Volunteers</p>
+                  <p className="text-sm text-gray-500 mt-0.5">
+                    When enabled, volunteers who meet the requirements will be automatically accepted without manual review.
+                  </p>
+                </div>
+                <Switch
+                  checked={formData.auto_accept}
+                  onCheckedChange={(checked) => setFormData({...formData, auto_accept: checked})}
+                />
+              </div>
+
               <div className="flex justify-end gap-2 pt-4">
                 <Button type="button" variant="outline" onClick={() => {
                   setShowDialog(false);
                   setEditingOpp(null);
-                  resetForm();
+                  setFormData(EMPTY_FORM);
                 }}>
                   Cancel
                 </Button>
-                <Button type="submit" className="bg-blue-900 hover:bg-blue-800">
-                  {editingOpp ? "Update" : "Post"} Opportunity
+                <Button type="submit" disabled={isPending} className="bg-blue-900 hover:bg-blue-800">
+                  {isPending ? "Saving..." : (editingOpp ? "Update Opportunity" : "Post Opportunity")}
                 </Button>
               </div>
             </form>
@@ -263,7 +344,7 @@ export default function OpportunityManager({ business, opportunities }) {
             <Card key={opp.id} className="border-none shadow-lg">
               <CardHeader>
                 <div className="flex items-start justify-between">
-                  <div>
+                  <div className="flex-1">
                     <CardTitle className="text-xl mb-2">{opp.title}</CardTitle>
                     <div className="flex gap-2 flex-wrap">
                       <Badge className={URGENCY_COLORS[opp.urgency]}>
@@ -272,9 +353,14 @@ export default function OpportunityManager({ business, opportunities }) {
                       <Badge variant={opp.status === 'open' ? 'default' : 'secondary'}>
                         {opp.status}
                       </Badge>
-                      {opp.slots_needed > 0 && (
-                        <Badge variant="outline">
-                          {opp.slots_filled || 0} / {opp.slots_needed} volunteers
+                      <Badge variant="outline">
+                        <Users className="w-3 h-3 mr-1" />
+                        {opp.slots_filled || 0} / {opp.slots_needed} volunteers
+                      </Badge>
+                      {opp.auto_accept && (
+                        <Badge className="bg-emerald-100 text-emerald-700">
+                          <Zap className="w-3 h-3 mr-1" />
+                          Auto-Accept
                         </Badge>
                       )}
                     </div>
@@ -283,9 +369,9 @@ export default function OpportunityManager({ business, opportunities }) {
                     <Button variant="ghost" size="icon" onClick={() => handleEdit(opp)}>
                       <Pencil className="w-4 h-4" />
                     </Button>
-                    <Button 
-                      variant="ghost" 
-                      size="icon" 
+                    <Button
+                      variant="ghost"
+                      size="icon"
                       onClick={() => deleteMutation.mutate(opp.id)}
                       className="text-red-600"
                     >
@@ -296,15 +382,40 @@ export default function OpportunityManager({ business, opportunities }) {
               </CardHeader>
               <CardContent className="space-y-3">
                 <p className="text-gray-700">{opp.description}</p>
-                {opp.hours_needed && (
-                  <div className="flex items-center gap-2 text-sm text-gray-600">
-                    <Clock className="w-4 h-4" />
-                    <span>Estimated: {opp.hours_needed} hours</span>
-                  </div>
-                )}
+
+                <div className="grid sm:grid-cols-2 gap-3 text-sm text-gray-600">
+                  {opp.location && (
+                    <div className="flex items-center gap-2">
+                      <MapPin className="w-4 h-4 flex-shrink-0" />
+                      <span>{opp.location}</span>
+                    </div>
+                  )}
+                  {opp.hours_needed && (
+                    <div className="flex items-center gap-2">
+                      <Clock className="w-4 h-4 flex-shrink-0" />
+                      <span>Estimated: {opp.hours_needed} hrs/volunteer</span>
+                    </div>
+                  )}
+                  {(opp.available_from || opp.available_to) && (
+                    <div className="flex items-center gap-2">
+                      <Calendar className="w-4 h-4 flex-shrink-0" />
+                      <span>
+                        {opp.available_from ? format(new Date(opp.available_from), 'MMM d, yyyy') : 'Now'}{' '}
+                        {opp.available_to ? `– ${format(new Date(opp.available_to), 'MMM d, yyyy')}` : ''}
+                      </span>
+                    </div>
+                  )}
+                  {opp.min_age > 0 && (
+                    <div className="flex items-center gap-2">
+                      <User className="w-4 h-4 flex-shrink-0" />
+                      <span>Age requirement: {opp.min_age}+</span>
+                    </div>
+                  )}
+                </div>
+
                 {opp.skills_needed?.length > 0 && (
                   <div>
-                    <p className="text-sm font-medium text-gray-700 mb-1">Skills:</p>
+                    <p className="text-sm font-medium text-gray-700 mb-1">Skills needed:</p>
                     <div className="flex gap-2 flex-wrap">
                       {opp.skills_needed.map(skill => (
                         <Badge key={skill} variant="outline">{skill}</Badge>
@@ -312,8 +423,9 @@ export default function OpportunityManager({ business, opportunities }) {
                     </div>
                   </div>
                 )}
+
                 {opp.special_offer && (
-                  <p className="text-sm text-purple-700"><strong>Perk:</strong> {opp.special_offer}</p>
+                  <p className="text-sm text-purple-700"><strong>Volunteer Perk:</strong> {opp.special_offer}</p>
                 )}
               </CardContent>
             </Card>

@@ -54,6 +54,7 @@ export default function BusinessDashboard() {
   }
 
   const pendingCount = applications.filter(app => app.status === 'pending').length;
+  const confirmedCount = applications.filter(app => ['confirmed', 'in_progress'].includes(app.status)).length;
   const activeOpportunities = opportunities.filter(opp => opp.status === 'open').length;
 
   return (
@@ -122,8 +123,8 @@ export default function BusinessDashboard() {
                 <Users className="w-6 h-6 text-green-600" />
               </div>
               <div>
-                <p className="text-2xl font-bold text-gray-900">{applications.length}</p>
-                <p className="text-sm text-gray-600">Total Applications</p>
+                <p className="text-2xl font-bold text-gray-900">{confirmedCount}</p>
+                <p className="text-sm text-gray-600">Confirmed Volunteers</p>
               </div>
             </div>
           </CardContent>
@@ -137,7 +138,8 @@ export default function BusinessDashboard() {
             Opportunities ({opportunities.length})
           </TabsTrigger>
           <TabsTrigger value="applications">
-            Applications ({pendingCount > 0 ? `${pendingCount} pending` : applications.length})
+            Applications & Volunteers
+            {pendingCount > 0 ? ` (${pendingCount} pending)` : ''}
           </TabsTrigger>
         </TabsList>
 
@@ -150,7 +152,7 @@ export default function BusinessDashboard() {
         </TabsContent>
 
         <TabsContent value="applications">
-          <ApplicationsManager business={business} applications={applications} />
+          <ApplicationsManager business={business} applications={applications} opportunities={opportunities} />
         </TabsContent>
       </Tabs>
     </div>
