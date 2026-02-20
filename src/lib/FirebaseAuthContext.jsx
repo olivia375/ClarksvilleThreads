@@ -93,16 +93,27 @@ export const AuthProvider = ({ children }) => {
     };
   }, []);
 
-  // Sign in with Google popup
+  // Sign in with Google - uses redirect when in an iframe or when COOP blocks popups
   const signInWithGoogle = async () => {
     try {
       setAuthError(null);
+      // In iframe environments, COOP headers block popup <-> opener communication.
+      // Fall straight through to redirect to avoid the console warnings.
+      const inIframe = window.self !== window.top;
+      if (inIframe) {
+        await signInWithRedirect(auth, googleProvider);
+        return;
+      }
       const result = await signInWithPopup(auth, googleProvider);
       return result.user;
     } catch (error) {
       console.error('Google sign-in error:', error);
-      // If popup is blocked, try redirect
-      if (error.code === 'auth/popup-blocked') {
+      // If popup is blocked or closed for any reason, fall back to redirect
+      if (
+        error.code === 'auth/popup-blocked' ||
+        error.code === 'auth/popup-closed-by-user' ||
+        error.code === 'auth/cancelled-popup-request'
+      ) {
         await signInWithRedirect(auth, googleProvider);
         return;
       }
