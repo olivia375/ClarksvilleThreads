@@ -16,6 +16,7 @@
     }
   ],
   "hosting": {
+    "site": "community-threads-486622-2c2e0",
     "public": "dist",
     "ignore": [
       "firebase.json",
