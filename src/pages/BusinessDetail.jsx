@@ -81,12 +81,12 @@ export default function BusinessDetail() {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <Link to={createPageUrl("Explore")}>
-        <Button variant="ghost" className="mb-6">
+      <Button asChild variant="ghost" className="mb-6">
+        <Link to={createPageUrl("Explore")}>
           <ArrowLeft className="w-4 h-4 mr-2" />
           Back to Explore
-        </Button>
-      </Link>
+        </Link>
+      </Button>
 
       {/* Business Header */}
       <Card className="mb-8 border-none shadow-lg">

@@ -104,12 +104,12 @@ export default function BusinessCard({ business, user }) {
           </div>
         </div>
 
-        <Link to={createPageUrl("BusinessDetail") + `?id=${business.id}`}>
-          <Button className="bg-sky-200 text-gray-800 px-4 py-2 text-sm font-medium rounded-md inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 shadow hover:bg-primary/90 h-9 w-full from-pink-600 to-purple-600 hover:from-pink-700 hover:to-purple-700">
+        <Button asChild className="bg-sky-200 text-gray-800 px-4 py-2 text-sm font-medium rounded-md shadow hover:bg-primary/90 w-full">
+          <Link to={createPageUrl("BusinessDetail") + `?id=${business.id}`}>
             View Details
             <ExternalLink className="w-4 h-4 ml-2" />
-          </Button>
-        </Link>
+          </Link>
+        </Button>
       </CardContent>
     </Card>);
 
