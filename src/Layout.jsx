@@ -44,13 +44,15 @@ export default function Layout({ children, currentPageName }) {
           key={item.name}
           to={item.path}
           onClick={() => mobile && setIsOpen(false)}
-          className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all ${
+          className={`flex items-center rounded-lg transition-all whitespace-nowrap ${
+            mobile ? "gap-3 px-4 py-2.5" : "px-3 py-2 text-sm"
+          } ${
             isActive(item.path)
               ? "bg-blue-50 text-blue-900 font-medium"
               : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
           }`}
         >
-          <item.icon className="w-5 h-5" />
+          {mobile && <item.icon className="w-5 h-5" />}
           <span>{item.name}</span>
         </Link>
       ))}
@@ -60,13 +62,15 @@ export default function Layout({ children, currentPageName }) {
           key={item.name}
           to={item.path}
           onClick={() => mobile && setIsOpen(false)}
-          className={`flex items-center gap-3 px-4 py-2.5 rounded-lg transition-all ${
+          className={`flex items-center rounded-lg transition-all whitespace-nowrap ${
+            mobile ? "gap-3 px-4 py-2.5" : "px-3 py-2 text-sm"
+          } ${
             isActive(item.path)
               ? "bg-blue-50 text-blue-900 font-medium"
               : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
           }`}
         >
-          <item.icon className="w-5 h-5" />
+          {mobile && <item.icon className="w-5 h-5" />}
           <span>{item.name}</span>
         </Link>
       ))}
@@ -103,13 +107,13 @@ export default function Layout({ children, currentPageName }) {
             </Link>
 
             {/* Desktop Navigation */}
-            <nav className="hidden md:flex items-center gap-2">
+            <nav className="hidden lg:flex items-center gap-1">
               <NavLinks />
             </nav>
 
             <div className="flex items-center gap-4">
               {user ? (
-                <div className="hidden md:flex items-center gap-3">
+                <div className="hidden lg:flex items-center gap-3">
                   <NotificationBadge user={user} />
                   <div className="text-right">
                     <p className="text-sm font-medium text-gray-900">{user.full_name}</p>
@@ -129,7 +133,7 @@ export default function Layout({ children, currentPageName }) {
               ) : (
                 <Button
                   onClick={signInWithGoogle}
-                  className="hidden md:flex items-center gap-2 bg-blue-900 hover:bg-blue-800"
+                  className="hidden lg:flex items-center gap-2 bg-blue-900 hover:bg-blue-800"
                 >
                   <LogIn className="w-4 h-4" />
                   Sign In with Google
@@ -138,7 +142,7 @@ export default function Layout({ children, currentPageName }) {
 
               {/* Mobile Menu */}
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
-                <SheetTrigger asChild className="md:hidden">
+                <SheetTrigger asChild className="lg:hidden">
                   <Button variant="ghost" size="icon">
                     <Menu className="w-6 h-6" />
                   </Button>
