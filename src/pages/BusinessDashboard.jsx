@@ -1,18 +1,19 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { entities } from "@/api/gcpClient";
 import { useAuth } from "@/lib/FirebaseAuthContext";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Building2, Plus, Users, Briefcase, AlertCircle } from "lucide-react";
+import { Building2, Users, Briefcase, AlertCircle, ClipboardList, UserCheck } from "lucide-react";
 import BusinessProfileEditor from "../components/business/BusinessProfileEditor";
 import OpportunityManager from "../components/business/OpportunityManager";
 import ApplicationsManager from "../components/business/ApplicationsManager";
+import VolunteerRoster from "../components/business/VolunteerRoster";
 
 export default function BusinessDashboard() {
   const navigate = useNavigate();
@@ -34,13 +35,13 @@ export default function BusinessDashboard() {
   }, [user, navigate]);
 
   const { data: opportunities = [] } = useQuery({
-    queryKey: ['business_opportunities', business?.id],
+    queryKey: ["business_opportunities", business?.id],
     queryFn: () => business ? entities.VolunteerOpportunity.filter({ business_id: business.id }) : [],
     enabled: !!business
   });
 
   const { data: applications = [] } = useQuery({
-    queryKey: ['business_applications', business?.id],
+    queryKey: ["business_applications", business?.id],
     queryFn: () => business ? entities.VolunteerCommitment.filter({ business_id: business.id }) : [],
     enabled: !!business
   });
@@ -53,16 +54,19 @@ export default function BusinessDashboard() {
     );
   }
 
-  const pendingCount = applications.filter(app => app.status === 'pending').length;
-  const confirmedCount = applications.filter(app => ['confirmed', 'in_progress'].includes(app.status)).length;
-  const activeOpportunities = opportunities.filter(opp => opp.status === 'open').length;
+  const pendingCount = applications.filter(a => a.status === "pending").length;
+  const confirmedCount = applications.filter(a =>
+    ["confirmed", "in_progress"].includes(a.status)
+  ).length;
+  const activeOpportunities = opportunities.filter(o => o.status === "open").length;
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      {/* Header */}
       <div className="mb-8">
-        <div className="flex items-center justify-between">
+        <div className="flex items-center justify-between flex-wrap gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-blue-900 rounded-lg flex items-center justify-center flex-shrink-0">
               <Building2 className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -87,7 +91,8 @@ export default function BusinessDashboard() {
         </Alert>
       )}
 
-      <div className="grid md:grid-cols-3 gap-6 mb-8">
+      {/* Stats Row */}
+      <div className="grid sm:grid-cols-3 gap-6 mb-8">
         <Card className="border-none shadow-lg">
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
@@ -106,7 +111,7 @@ export default function BusinessDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-yellow-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-yellow-600" />
+                <ClipboardList className="w-6 h-6 text-yellow-600" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900">{pendingCount}</p>
@@ -120,7 +125,7 @@ export default function BusinessDashboard() {
           <CardContent className="p-6">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-green-600" />
+                <UserCheck className="w-6 h-6 text-green-600" />
               </div>
               <div>
                 <p className="text-2xl font-bold text-gray-900">{confirmedCount}</p>
@@ -131,15 +136,34 @@ export default function BusinessDashboard() {
         </Card>
       </div>
 
+      {/* Main Tabs */}
       <Tabs defaultValue="profile" className="space-y-6">
-        <TabsList>
-          <TabsTrigger value="profile">Business Profile</TabsTrigger>
+        <TabsList className="flex-wrap h-auto gap-1">
+          <TabsTrigger value="profile">
+            <Building2 className="w-4 h-4 mr-1.5" />
+            Business Profile
+          </TabsTrigger>
           <TabsTrigger value="opportunities">
+            <Briefcase className="w-4 h-4 mr-1.5" />
             Opportunities ({opportunities.length})
           </TabsTrigger>
-          <TabsTrigger value="applications">
-            Applications & Volunteers
-            {pendingCount > 0 ? ` (${pendingCount} pending)` : ''}
+          <TabsTrigger value="applications" className="relative">
+            <ClipboardList className="w-4 h-4 mr-1.5" />
+            Applications
+            {pendingCount > 0 && (
+              <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-yellow-500 text-white rounded-full">
+                {pendingCount}
+              </span>
+            )}
+          </TabsTrigger>
+          <TabsTrigger value="volunteers">
+            <Users className="w-4 h-4 mr-1.5" />
+            Volunteer Roster
+            {confirmedCount > 0 && (
+              <span className="ml-1.5 inline-flex items-center justify-center w-5 h-5 text-xs font-bold bg-green-600 text-white rounded-full">
+                {confirmedCount}
+              </span>
+            )}
           </TabsTrigger>
         </TabsList>
 
@@ -152,7 +176,18 @@ export default function BusinessDashboard() {
         </TabsContent>
 
         <TabsContent value="applications">
-          <ApplicationsManager business={business} applications={applications} opportunities={opportunities} />
+          <ApplicationsManager
+            business={business}
+            applications={applications}
+            opportunities={opportunities}
+          />
+        </TabsContent>
+
+        <TabsContent value="volunteers">
+          <VolunteerRoster
+            applications={applications}
+            opportunities={opportunities}
+          />
         </TabsContent>
       </Tabs>
     </div>
