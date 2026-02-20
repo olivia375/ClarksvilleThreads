@@ -158,11 +158,11 @@ export default function Opportunities() {
                   )}
 
                   <div className="mt-auto pt-4">
-                    <Link to={`${createPageUrl("BusinessDetail")}?id=${opp.business_id}`}>
-                      <Button className="w-full bg-emerald-600 hover:bg-emerald-700">
+                    <Button asChild className="w-full bg-emerald-600 hover:bg-emerald-700">
+                      <Link to={`${createPageUrl("BusinessDetail")}?id=${opp.business_id}`}>
                         View Details & Apply
-                      </Button>
-                    </Link>
+                      </Link>
+                    </Button>
                   </div>
                 </CardContent>
               </Card>

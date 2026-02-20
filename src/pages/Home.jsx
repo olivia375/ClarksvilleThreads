@@ -81,17 +81,17 @@ Support Local Businesses
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Link to={user ? createPageUrl("Profile") : createPageUrl("Profile")}>
-                <Button size="lg" className="bg-red-400 text-white px-8 py-3 text-base font-medium rounded-lg inline-flex items-center justify-center gap-2 whitespace-nowrap focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 h-10 hover:bg-blue-800 shadow-md hover:shadow-lg transition-all">
+              <Button asChild size="lg" className="bg-red-400 text-white px-8 py-3 text-base font-medium rounded-lg hover:bg-blue-800 shadow-md hover:shadow-lg transition-all">
+                <Link to={createPageUrl("Profile")}>
                   Get Started
                   <ArrowRight className="w-5 h-5 ml-2" />
-                </Button>
-              </Link>
-              <Link to={createPageUrl("Explore")}>
-                <Button size="lg" variant="outline" className="bg-pink-200 px-8 py-3 text-base font-medium rounded-lg inline-flex items-center justify-center gap-2 whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 shadow-sm hover:text-accent-foreground h-10 border-2 border-gray-300 hover:bg-gray-50">
+                </Link>
+              </Button>
+              <Button asChild size="lg" variant="outline" className="bg-pink-200 px-8 py-3 text-base font-medium rounded-lg border-2 border-gray-300 hover:bg-gray-50">
+                <Link to={createPageUrl("Explore")}>
                   Explore Opportunities
-                </Button>
-              </Link>
+                </Link>
+              </Button>
             </div>
 
             <div className="mt-8 text-center">
