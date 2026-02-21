@@ -37,13 +37,23 @@ export default function Layout({ children, currentPageName }) {
     logout();
   };
 
-  const NavLinks = ({ mobile = false }) => (
+  const NavLinks = ({ mobile = false }) => {
+    const handleNavClick = (e, path) => {
+      e.preventDefault();
+      if (mobile) setIsOpen(false);
+      // Notify parent window about navigation (for iframe environments)
+      window.parent?.postMessage({ type: 'app_changed_url', url: window.location.origin + path }, '*');
+      // Force navigation
+      window.location.href = path;
+    };
+
+    return (
     <>
       {navItems.map((item) => (
         <a
           key={item.name}
           href={item.path}
-          onClick={() => mobile && setIsOpen(false)}
+          onClick={(e) => handleNavClick(e, item.path)}
           className={`flex items-center rounded-lg transition-all whitespace-nowrap ${
             mobile ? "gap-3 px-4 py-2.5" : "px-3 py-2 text-sm"
           } ${
@@ -61,7 +71,7 @@ export default function Layout({ children, currentPageName }) {
         <a
           key={item.name}
           href={item.path}
-          onClick={() => mobile && setIsOpen(false)}
+          onClick={(e) => handleNavClick(e, item.path)}
           className={`flex items-center rounded-lg transition-all whitespace-nowrap ${
             mobile ? "gap-3 px-4 py-2.5" : "px-3 py-2 text-sm"
           } ${
@@ -75,7 +85,8 @@ export default function Layout({ children, currentPageName }) {
         </a>
       ))}
     </>
-  );
+    );
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -96,7 +107,7 @@ export default function Layout({ children, currentPageName }) {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <a href={createPageUrl("Home")} className="flex items-center gap-3">
+            <a href={createPageUrl("Home")} onClick={(e) => { e.preventDefault(); window.parent?.postMessage({ type: 'app_changed_url', url: window.location.origin + createPageUrl("Home") }, '*'); window.location.href = createPageUrl("Home"); }} className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center">
                 <Building2 className="w-5 h-5 text-white" />
               </div>
