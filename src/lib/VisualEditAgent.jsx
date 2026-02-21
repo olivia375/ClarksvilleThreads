@@ -364,6 +364,10 @@ export default function VisualEditAgent() {
 
 	// Listen for messages from parent window
 	useEffect(() => {
+		// Only initialize when running inside an iframe (visual editor context)
+		const inIframe = window.self !== window.top;
+		if (!inIframe) return;
+
 		// Add IDs to elements that don't have them but have linenumbers
 		const elementsWithLineNumber = document.querySelectorAll('[data-linenumber]:not([data-visual-selector-id])');
 		elementsWithLineNumber.forEach((el, index) => {
