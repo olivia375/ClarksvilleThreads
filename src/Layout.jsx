@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useLocation } from "react-router-dom";
+import { useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { Home, Building2, Heart, User, Search, Briefcase, LogOut, LogIn, Menu, Calendar as CalendarIcon } from "lucide-react";
 import { useAuth } from "@/lib/FirebaseAuthContext";
@@ -40,9 +40,9 @@ export default function Layout({ children, currentPageName }) {
   const NavLinks = ({ mobile = false }) => (
     <>
       {navItems.map((item) => (
-        <Link
+        <a
           key={item.name}
-          to={item.path}
+          href={item.path}
           onClick={() => mobile && setIsOpen(false)}
           className={`flex items-center rounded-lg transition-all whitespace-nowrap ${
             mobile ? "gap-3 px-4 py-2.5" : "px-3 py-2 text-sm"
@@ -54,13 +54,13 @@ export default function Layout({ children, currentPageName }) {
         >
           {mobile && <item.icon className="w-5 h-5" />}
           <span>{item.name}</span>
-        </Link>
+        </a>
       ))}
       {mobile && <div className="border-t border-gray-200 my-2" />}
       {businessNavItems.map((item) => (
-        <Link
+        <a
           key={item.name}
-          to={item.path}
+          href={item.path}
           onClick={() => mobile && setIsOpen(false)}
           className={`flex items-center rounded-lg transition-all whitespace-nowrap ${
             mobile ? "gap-3 px-4 py-2.5" : "px-3 py-2 text-sm"
@@ -72,7 +72,7 @@ export default function Layout({ children, currentPageName }) {
         >
           {mobile && <item.icon className="w-5 h-5" />}
           <span>{item.name}</span>
-        </Link>
+        </a>
       ))}
     </>
   );
@@ -96,7 +96,7 @@ export default function Layout({ children, currentPageName }) {
       <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
-            <Link to={createPageUrl("Home")} className="flex items-center gap-3">
+            <a href={createPageUrl("Home")} className="flex items-center gap-3">
               <div className="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center">
                 <Building2 className="w-5 h-5 text-white" />
               </div>
@@ -104,7 +104,7 @@ export default function Layout({ children, currentPageName }) {
                 <h1 className="text-xl font-semibold text-gray-900 tracking-tight">CommunityConnect</h1>
                 <p className="text-xs text-gray-500">Local Volunteer Platform</p>
               </div>
-            </Link>
+            </a>
 
             {/* Desktop Navigation */}
             <nav className="hidden lg:flex items-center gap-1">
