@@ -25,10 +25,10 @@ export default function ApplicationsManager({ business, applications, opportunit
       await entities.VolunteerCommitment.update(applicationId, { status });
 
       if (status === "confirmed") {
-        const opps = await entities.VolunteerOpportunity.filter({ id: opportunityId });
-        if (opps.length > 0) {
+        const opp = await entities.VolunteerOpportunity.get(opportunityId);
+        if (opp) {
           await entities.VolunteerOpportunity.update(opportunityId, {
-            slots_filled: (opps[0].slots_filled || 0) + 1
+            slots_filled: (opp.slots_filled || 0) + 1
           });
         }
       }
