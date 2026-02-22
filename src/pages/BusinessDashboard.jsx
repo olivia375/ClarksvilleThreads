@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { entities } from "@/api/gcpClient";
 import { useAuth } from "@/lib/FirebaseAuthContext";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -19,17 +18,24 @@ export default function BusinessDashboard() {
   const navigate = useNavigate();
   const { user } = useAuth();
   const [business, setBusiness] = useState(null);
+  const [loadError, setLoadError] = useState(null);
 
   useEffect(() => {
     if (!user) return;
-    if (!user.is_business_owner) {
+    if (!user.is_business_owner || !user.business_id) {
       navigate(createPageUrl("BusinessSignup"));
-    } else if (user.business_id) {
+    } else {
       entities.Business.filter({ id: user.business_id })
         .then(businesses => {
           if (businesses.length > 0) {
             setBusiness(businesses[0]);
+          } else {
+            navigate(createPageUrl("BusinessSignup"));
           }
+        })
+        .catch(error => {
+          console.error("Failed to load business profile:", error);
+          setLoadError("Failed to load your business profile. Please refresh the page to try again.");
         });
     }
   }, [user, navigate]);
@@ -46,10 +52,21 @@ export default function BusinessDashboard() {
     enabled: !!business
   });
 
-  if (!user || !business) {
+  if (!user || (!business && !loadError)) {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900" />
+      </div>
+    );
+  }
+
+  if (loadError) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Alert className="max-w-md bg-red-50 border-red-200">
+          <AlertCircle className="h-4 w-4 text-red-600" />
+          <AlertDescription className="text-red-800">{loadError}</AlertDescription>
+        </Alert>
       </div>
     );
   }
