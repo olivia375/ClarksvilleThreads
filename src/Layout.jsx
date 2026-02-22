@@ -25,12 +25,6 @@ export default function Layout({ children, currentPageName }) {
     { name: "My Profile", icon: User, path: createPageUrl("Profile") },
   ];
 
-  const businessNavItems = user?.is_business_owner ? [
-    { name: "Business Dashboard", icon: Building2, path: createPageUrl("BusinessDashboard") }
-  ] : [
-    { name: "Business Signup", icon: Building2, path: createPageUrl("BusinessSignup") }
-  ];
-
   const isActive = (path) => location.pathname === path;
 
   const handleLogout = () => {
@@ -40,24 +34,6 @@ export default function Layout({ children, currentPageName }) {
   const NavLinks = ({ mobile = false }) => (
     <>
       {navItems.map((item) => (
-        <Link
-          key={item.name}
-          to={item.path}
-          onClick={mobile ? () => setIsOpen(false) : undefined}
-          className={`flex items-center rounded-lg transition-all whitespace-nowrap ${
-            mobile ? "gap-3 px-4 py-2.5" : "px-3 py-2 text-sm"
-          } ${
-            isActive(item.path)
-              ? "bg-blue-50 text-blue-900 font-medium"
-              : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
-          }`}
-        >
-          {mobile && <item.icon className="w-5 h-5" />}
-          <span>{item.name}</span>
-        </Link>
-      ))}
-      {mobile && <div className="border-t border-gray-200 my-2" />}
-      {businessNavItems.map((item) => (
         <Link
           key={item.name}
           to={item.path}

@@ -1,4 +1,3 @@
-import BusinessDashboard from './pages/BusinessDashboard';
 import BusinessDetail from './pages/BusinessDetail';
 import BusinessSignup from './pages/BusinessSignup';
 import Calendar from './pages/Calendar';
@@ -11,7 +10,6 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
-    "BusinessDashboard": BusinessDashboard,
     "BusinessDetail": BusinessDetail,
     "BusinessSignup": BusinessSignup,
     "Calendar": Calendar,
