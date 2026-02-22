@@ -25,10 +25,10 @@ export default function BusinessDashboard() {
     if (!user.is_business_owner) {
       navigate(createPageUrl("BusinessSignup"));
     } else if (user.business_id) {
-      entities.Business.filter({ id: user.business_id })
-        .then(businesses => {
-          if (businesses.length > 0) {
-            setBusiness(businesses[0]);
+      entities.Business.get(user.business_id)
+        .then(business => {
+          if (business) {
+            setBusiness(business);
           }
         });
     }
