@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useAuth } from "@/lib/FirebaseAuthContext";
 import { entities } from "@/api/gcpClient";
@@ -14,8 +14,8 @@ import {
   Clock,
   CheckCircle,
   AlertCircle,
-  ChevronRight,
   Plus,
+  Settings,
 } from "lucide-react";
 
 const URGENCY_COLORS = {
@@ -32,7 +32,6 @@ const STATUS_COLORS = {
 };
 
 export default function BusinessDashboard() {
-  const navigate = useNavigate();
   const { user, isLoadingAuth } = useAuth();
 
   const { data: business, isLoading: isLoadingBusiness } = useQuery({
@@ -113,9 +112,10 @@ export default function BusinessDashboard() {
             <p className="text-gray-500 capitalize">{business?.category}</p>
           </div>
         </div>
-        <Link to={createPageUrl("BusinessSignup")}>
+        <Link to={createPageUrl("ManageOpportunities")}>
           <Button variant="outline" size="sm">
-            Edit Profile
+            <Settings className="w-4 h-4 mr-2" />
+            Manage Opportunities
           </Button>
         </Link>
       </div>
@@ -194,7 +194,7 @@ export default function BusinessDashboard() {
         <CardHeader>
           <div className="flex items-center justify-between">
             <CardTitle className="text-xl">Volunteer Opportunities</CardTitle>
-            <Link to={createPageUrl("BusinessSignup")}>
+            <Link to={createPageUrl("ManageOpportunities")}>
               <Button size="sm" className="bg-blue-900 hover:bg-blue-800">
                 <Plus className="w-4 h-4 mr-1" />
                 Add Opportunity
@@ -211,7 +211,7 @@ export default function BusinessDashboard() {
             <div className="text-center py-10">
               <Briefcase className="w-12 h-12 text-gray-300 mx-auto mb-3" />
               <p className="text-gray-500 mb-4">No opportunities posted yet.</p>
-              <Link to={createPageUrl("BusinessSignup")}>
+              <Link to={createPageUrl("ManageOpportunities")}>
                 <Button className="bg-blue-900 hover:bg-blue-800">Post Your First Opportunity</Button>
               </Link>
             </div>
@@ -222,7 +222,7 @@ export default function BusinessDashboard() {
                 const pending = oppCommitments.filter((c) => c.status === "pending").length;
                 const confirmed = oppCommitments.filter((c) => c.status === "confirmed").length;
                 return (
-                  <div key={opp.id} className="py-4 flex items-center justify-between gap-4">
+                  <div key={opp.id} className="py-4 flex items-start justify-between gap-4">
                     <div className="min-w-0">
                       <div className="flex items-center gap-2 flex-wrap mb-1">
                         <p className="font-medium text-gray-900">{opp.title}</p>
@@ -244,7 +244,12 @@ export default function BusinessDashboard() {
                         )}
                       </div>
                     </div>
-                    <ChevronRight className="w-5 h-5 text-gray-300 flex-shrink-0" />
+                    <Link
+                      to={createPageUrl("ManageOpportunities")}
+                      className="text-xs text-blue-700 hover:underline flex-shrink-0 pt-1"
+                    >
+                      Edit
+                    </Link>
                   </div>
                 );
               })}
