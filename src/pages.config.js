@@ -1,3 +1,4 @@
+import BusinessCalendar from './pages/BusinessCalendar';
 import BusinessDashboard from './pages/BusinessDashboard';
 import BusinessDetail from './pages/BusinessDetail';
 import BusinessSignup from './pages/BusinessSignup';
@@ -12,6 +13,7 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "BusinessCalendar": BusinessCalendar,
     "BusinessDashboard": BusinessDashboard,
     "BusinessDetail": BusinessDetail,
     "BusinessSignup": BusinessSignup,

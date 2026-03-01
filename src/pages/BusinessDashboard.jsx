@@ -16,6 +16,7 @@ import {
   AlertCircle,
   Plus,
   Settings,
+  Calendar,
 } from "lucide-react";
 
 const URGENCY_COLORS = {
@@ -112,12 +113,20 @@ export default function BusinessDashboard() {
             <p className="text-gray-500 capitalize">{business?.category}</p>
           </div>
         </div>
-        <Link to={createPageUrl("ManageOpportunities")}>
-          <Button variant="outline" size="sm">
-            <Settings className="w-4 h-4 mr-2" />
-            Manage Opportunities
-          </Button>
-        </Link>
+        <div className="flex gap-2">
+          <Link to={createPageUrl("BusinessCalendar")}>
+            <Button variant="outline" size="sm">
+              <Calendar className="w-4 h-4 mr-2" />
+              View Calendar
+            </Button>
+          </Link>
+          <Link to={createPageUrl("ManageOpportunities")}>
+            <Button variant="outline" size="sm">
+              <Settings className="w-4 h-4 mr-2" />
+              Manage Opportunities
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Stats */}
