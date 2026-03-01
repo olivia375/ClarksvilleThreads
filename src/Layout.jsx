@@ -1,7 +1,7 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
 import { createPageUrl } from "@/utils";
-import { Home, Building2, Heart, User, Search, Briefcase, LogOut, LogIn, Menu, Calendar as CalendarIcon } from "lucide-react";
+import { Home, Building2, Heart, User, Search, Briefcase, LogOut, LogIn, Menu, Calendar as CalendarIcon, LayoutDashboard } from "lucide-react";
 import { useAuth } from "@/lib/FirebaseAuthContext";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,6 +23,9 @@ export default function Layout({ children, currentPageName }) {
     { name: "My Calendar", icon: CalendarIcon, path: createPageUrl("Calendar") },
     { name: "My Favorites", icon: Heart, path: createPageUrl("Favorites") },
     { name: "My Profile", icon: User, path: createPageUrl("Profile") },
+    ...(user?.is_business_owner
+      ? [{ name: "Business Dashboard", icon: LayoutDashboard, path: createPageUrl("BusinessDashboard") }]
+      : []),
   ];
 
   const isActive = (path) => location.pathname === path;

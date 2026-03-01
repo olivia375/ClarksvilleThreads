@@ -1,5 +1,7 @@
+import BusinessDashboard from './pages/BusinessDashboard';
 import BusinessDetail from './pages/BusinessDetail';
 import BusinessSignup from './pages/BusinessSignup';
+import ManageOpportunities from './pages/ManageOpportunities';
 import Calendar from './pages/Calendar';
 import Explore from './pages/Explore';
 import Favorites from './pages/Favorites';
@@ -10,8 +12,10 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "BusinessDashboard": BusinessDashboard,
     "BusinessDetail": BusinessDetail,
     "BusinessSignup": BusinessSignup,
+    "ManageOpportunities": ManageOpportunities,
     "Calendar": Calendar,
     "Explore": Explore,
     "Favorites": Favorites,
