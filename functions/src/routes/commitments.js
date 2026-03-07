@@ -259,7 +259,8 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
 router.post('/filter', verifyToken, async (req, res, next) => {
   try {
     const user = await userService.getUserByUid(req.user.uid);
-    const { volunteer_email, business_id, status } = req.body;
+    const { filters = {} } = req.body;
+    const { volunteer_email, business_id, opportunity_id, status } = filters;
 
     // If filtering by business, verify ownership
     if (business_id) {
@@ -268,6 +269,12 @@ router.post('/filter', verifyToken, async (req, res, next) => {
         const commitments = await commitmentService.getCommitmentsByBusiness(business_id, status);
         return res.json(commitments);
       }
+    }
+
+    // If filtering by opportunity, return commitments for that opportunity
+    if (opportunity_id) {
+      const commitments = await commitmentService.getCommitmentsByOpportunity(opportunity_id);
+      return res.json(commitments);
     }
 
     // Otherwise, return user's own commitments
