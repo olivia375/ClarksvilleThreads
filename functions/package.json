@@ -1,6 +1,6 @@
 {
   "name": "commonthread-functions",
-  "description": "Cloud Functions for CommonThread volunteer platform",
+  "description": "Cloud Functions for BeyondNeighborly volunteer platform",
   "version": "1.0.0",
   "type": "module",
   "engines": {

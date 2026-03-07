@@ -26,7 +26,7 @@ export default function QASection() {
 
     try {
       const response = await integrations.Core.InvokeLLM({
-        prompt: `You are a helpful assistant for CommunityConnect, a volunteer platform connecting volunteers with local businesses and nonprofits. 
+        prompt: `You are a helpful assistant for BeyondNeighborly, a volunteer platform connecting volunteers with local businesses and nonprofits. 
         
 Answer the following question about volunteering, community service, or how to use the platform. Be friendly, concise, and encouraging. 
 If the question is about how to volunteer, mention that users can browse businesses in the Explore page, check opportunities in the Opportunities page, and complete their volunteer profile.

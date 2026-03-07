@@ -11,7 +11,7 @@ if (SENDGRID_API_KEY) {
 /**
  * Send an email using SendGrid
  */
-export const sendEmail = async ({ to, subject, body, from_name = 'CommonThread' }) => {
+export const sendEmail = async ({ to, subject, body, from_name = 'BeyondNeighborly' }) => {
   if (!SENDGRID_API_KEY) {
     console.warn('SendGrid API key not configured, email not sent');
     return { success: false, message: 'Email service not configured' };
@@ -88,7 +88,7 @@ export const sendApplicationConfirmation = async ({
         </p>
 
         <p style="color: #6b7280; font-size: 14px;">
-          - The CommonThread Team
+          - The BeyondNeighborly Team
         </p>
       </div>
     </div>
@@ -101,12 +101,12 @@ export const sendApplicationConfirmation = async ({
  * Send welcome email
  */
 export const sendWelcomeEmail = async ({ userEmail, userName }) => {
-  const subject = 'Welcome to CommonThread!';
+  const subject = 'Welcome to BeyondNeighborly!';
 
   const body = `
     <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
       <div style="background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to CommonThread!</h1>
+        <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to BeyondNeighborly!</h1>
       </div>
 
       <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px;">
@@ -131,7 +131,7 @@ export const sendWelcomeEmail = async ({ userEmail, userName }) => {
         </p>
 
         <p style="color: #6b7280; font-size: 14px;">
-          - The CommonThread Team
+          - The BeyondNeighborly Team
         </p>
       </div>
     </div>

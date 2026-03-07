@@ -242,7 +242,7 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
 
       if (status === "confirmed") {
         await integrations.Core.SendEmail({
-          from_name: "CommunityConnect",
+          from_name: "BeyondNeighborly",
           to: user.email,
           subject: `Application Confirmed: ${selectedOpp.title} at ${business.name} ✅`,
           body: `
@@ -266,7 +266,7 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
                   </table>
                 </div>
                 <p style="color: #6b7280; font-size: 14px; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px;">
-                  Thank you for making a difference in your community! — The CommunityConnect Team
+                  Thank you for making a difference in your community! — The BeyondNeighborly Team
                 </p>
               </div>
             </div>
@@ -274,7 +274,7 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
         });
       } else {
         await integrations.Core.SendEmail({
-          from_name: "CommunityConnect",
+          from_name: "BeyondNeighborly",
           to: user.email,
           subject: `Application Submitted: ${selectedOpp.title} at ${business.name}`,
           body: `
@@ -298,7 +298,7 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
                   </table>
                 </div>
                 <p style="color: #6b7280; font-size: 14px; margin-top: 30px; border-top: 1px solid #e5e7eb; padding-top: 20px;">
-                  Thank you for wanting to make a difference! — The CommunityConnect Team
+                  Thank you for wanting to make a difference! — The BeyondNeighborly Team
                 </p>
               </div>
             </div>
