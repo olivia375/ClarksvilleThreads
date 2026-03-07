@@ -371,13 +371,13 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
                         </Badge>
                       )}
                       {opp.auto_accept && (
-                        <Badge className="bg-emerald-100 text-emerald-700">
+                        <Badge className="bg-blue-100 text-blue-700">
                           <Zap className="w-3 h-3 mr-1" />
                           Instant Confirm
                         </Badge>
                       )}
                       {opp.schedule_type === "recurring" && (
-                        <Badge className="bg-purple-100 text-purple-700">
+                        <Badge className="bg-sky-100 text-sky-700">
                           <Repeat className="w-3 h-3 mr-1" />
                           Recurring
                         </Badge>
@@ -392,7 +392,7 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
                         setShowApplyDialog(true);
                       }}
                       disabled={isFull}
-                      className="bg-emerald-600 hover:bg-emerald-700 flex-shrink-0"
+                      className="bg-blue-900 hover:bg-blue-800 flex-shrink-0"
                     >
                       {isFull ? "Full" : "Apply Now"}
                     </Button>
@@ -435,7 +435,7 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
                     </div>
                     <div className="w-full bg-gray-200 rounded-full h-2">
                       <div
-                        className="bg-emerald-600 h-2 rounded-full transition-all"
+                        className="bg-blue-700 h-2 rounded-full transition-all"
                         style={{
                           width: `${Math.min(
                             ((opp.slots_filled || 0) / opp.slots_needed) * 100,
@@ -466,9 +466,9 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
                 )}
 
                 {opp.special_offer && (
-                  <Alert className="bg-purple-50 border-purple-200">
-                    <Tag className="h-4 w-4 text-purple-600" />
-                    <AlertDescription className="text-purple-800">
+                  <Alert className="bg-sky-50 border-sky-200">
+                    <Tag className="h-4 w-4 text-sky-600" />
+                    <AlertDescription className="text-sky-800">
                       <strong>Volunteer Perk:</strong> {opp.special_offer}
                     </AlertDescription>
                   </Alert>
@@ -496,7 +496,7 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
                 <AlertDescription className="text-blue-800 text-sm">
                   <strong>Age Requirement:</strong> Must be {effectiveMinAge}+ years old
                   {user?.age && user.age >= effectiveMinAge && (
-                    <span className="text-emerald-700 block mt-1">You meet this requirement</span>
+                    <span className="text-blue-700 block mt-1">You meet this requirement</span>
                   )}
                   {user?.age && user.age < effectiveMinAge && (
                     <span className="text-red-700 block mt-1">
@@ -507,9 +507,9 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
               </Alert>
             )}
             {selectedOpp?.auto_accept ? (
-              <Alert className="bg-emerald-50 border-emerald-200">
-                <Zap className="h-4 w-4 text-emerald-600" />
-                <AlertDescription className="text-emerald-800 text-sm">
+              <Alert className="bg-blue-50 border-blue-200">
+                <Zap className="h-4 w-4 text-blue-600" />
+                <AlertDescription className="text-blue-800 text-sm">
                   <strong>Instant Confirm:</strong> If you meet the requirements, you&apos;ll be
                   automatically confirmed.
                 </AlertDescription>
@@ -648,7 +648,7 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
                   applyMutation.isPending ||
                   (availableDates !== null && availableDates.length === 0)
                 }
-                className="bg-emerald-600 hover:bg-emerald-700"
+                className="bg-blue-900 hover:bg-blue-800"
               >
                 {applyMutation.isPending ? "Submitting..." : "Submit Application"}
               </Button>

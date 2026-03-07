@@ -44,9 +44,13 @@ export default function Layout({ children, currentPageName }) {
           className={`flex items-center rounded-lg transition-all whitespace-nowrap ${
             mobile ? "gap-3 px-4 py-2.5" : "px-3 py-2 text-sm"
           } ${
-            isActive(item.path)
-              ? "bg-blue-50 text-blue-900 font-medium"
-              : "text-gray-600 hover:bg-gray-100 hover:text-gray-900"
+            mobile
+              ? isActive(item.path)
+                ? "bg-blue-100 text-blue-900 font-semibold"
+                : "text-gray-600 hover:bg-blue-50 hover:text-blue-900"
+              : isActive(item.path)
+              ? "bg-white/20 text-white font-semibold"
+              : "text-blue-100 hover:bg-white/10 hover:text-white"
           }`}
         >
           {mobile && <item.icon className="w-5 h-5" />}
@@ -57,7 +61,7 @@ export default function Layout({ children, currentPageName }) {
   );
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-blue-50/30">
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
         
@@ -66,22 +70,22 @@ export default function Layout({ children, currentPageName }) {
         }
         
         :root {
-          --primary: 30 64 175;
-          --primary-foreground: 255 255 255;
+          --primary: 221 77% 27%;
+          --primary-foreground: 0 0% 100%;
         }
       `}</style>
 
       {/* Desktop Header */}
-      <header className="bg-white border-b border-gray-200 sticky top-0 z-40 shadow-sm">
+      <header className="bg-blue-900 sticky top-0 z-40 shadow-lg">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <Link to={createPageUrl("Home")} className="flex items-center gap-3">
-              <div className="w-10 h-10 bg-blue-900 rounded-lg flex items-center justify-center">
+              <div className="w-10 h-10 bg-white/10 rounded-lg flex items-center justify-center border border-white/20">
                 <Building2 className="w-5 h-5 text-white" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-xl font-semibold text-gray-900 tracking-tight">BeyondNeighborly</h1>
-                <p className="text-xs text-gray-500">Local Volunteer Platform</p>
+                <h1 className="text-xl font-semibold text-white tracking-tight">BeyondNeighborly</h1>
+                <p className="text-xs text-blue-200">Local Volunteer Platform</p>
               </div>
             </Link>
 
@@ -95,8 +99,8 @@ export default function Layout({ children, currentPageName }) {
                 <div className="hidden lg:flex items-center gap-3">
                   <NotificationBadge user={user} />
                   <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">{user.full_name}</p>
-                    <p className="text-xs text-gray-500">
+                    <p className="text-sm font-medium text-white">{user.full_name}</p>
+                    <p className="text-xs text-blue-200">
                       {user.total_hours_volunteered || 0}h volunteered
                     </p>
                   </div>
@@ -104,7 +108,7 @@ export default function Layout({ children, currentPageName }) {
                     variant="ghost"
                     size="icon"
                     onClick={handleLogout}
-                    className="text-gray-500 hover:text-gray-700"
+                    className="text-blue-200 hover:text-white hover:bg-white/10"
                   >
                     <LogOut className="w-5 h-5" />
                   </Button>
@@ -112,7 +116,7 @@ export default function Layout({ children, currentPageName }) {
               ) : (
                 <Button
                   onClick={signInWithGoogle}
-                  className="hidden lg:flex items-center gap-2 bg-blue-900 hover:bg-blue-800"
+                  className="hidden lg:flex items-center gap-2 bg-white text-blue-900 hover:bg-blue-50"
                 >
                   <LogIn className="w-4 h-4" />
                   Sign In with Google
@@ -122,7 +126,7 @@ export default function Layout({ children, currentPageName }) {
               {/* Mobile Menu */}
               <Sheet open={isOpen} onOpenChange={setIsOpen}>
                 <SheetTrigger asChild className="lg:hidden">
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" className="text-white hover:bg-white/10">
                     <Menu className="w-6 h-6" />
                   </Button>
                 </SheetTrigger>
@@ -133,16 +137,16 @@ export default function Layout({ children, currentPageName }) {
                         <Building2 className="w-5 h-5 text-white" />
                       </div>
                       <div>
-                        <h2 className="font-semibold text-gray-900">BeyondNeighborly</h2>
-                        <p className="text-xs text-gray-500">Menu</p>
+                        <h2 className="font-semibold text-blue-900">BeyondNeighborly</h2>
+                        <p className="text-xs text-blue-500">Menu</p>
                       </div>
                     </div>
 
                     {user && (
-                      <div className="mb-6 p-4 bg-gray-100 rounded-lg">
-                        <p className="font-medium text-gray-900">{user.full_name}</p>
-                        <p className="text-sm text-gray-600">{user.email}</p>
-                        <p className="text-xs text-gray-500 mt-1">
+                      <div className="mb-6 p-4 bg-blue-50 rounded-lg border border-blue-100">
+                        <p className="font-medium text-blue-900">{user.full_name}</p>
+                        <p className="text-sm text-blue-600">{user.email}</p>
+                        <p className="text-xs text-blue-400 mt-1">
                           {user.total_hours_volunteered || 0}h volunteered
                         </p>
                       </div>
@@ -166,7 +170,7 @@ export default function Layout({ children, currentPageName }) {
                       </Button>
                     ) : (
                       <Button
-                        className="w-full bg-blue-900 hover:bg-blue-800"
+                        className="w-full bg-blue-900 hover:bg-blue-800 text-white"
                         onClick={() => {
                           signInWithGoogle();
                           setIsOpen(false);
@@ -190,9 +194,9 @@ export default function Layout({ children, currentPageName }) {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-gray-200 mt-16">
+      <footer className="bg-blue-900 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center text-gray-500 text-sm">
+          <div className="text-center text-blue-200 text-sm">
             <p>© 2025 BeyondNeighborly. Connecting volunteers with local businesses.</p>
           </div>
         </div>

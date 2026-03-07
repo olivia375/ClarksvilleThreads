@@ -52,16 +52,16 @@ export default function BusinessCard({ business, user }) {
           <div className="flex-1">
             <CardTitle className="text-xl mb-2">{business.name}</CardTitle>
             <div className="flex items-center gap-2 mb-3">
-              <Badge className="bg-pink-100 text-pink-700 capitalize">
+              <Badge className="bg-blue-100 text-blue-700 capitalize">
                 {business.category}
               </Badge>
               {business.verified &&
-              <Badge className="bg-red-100 text-red-300 px-2.5 py-0.5 text-xs font-semibold rounded-md inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent shadow hover:bg-primary/80">
+              <Badge className="bg-blue-100 text-blue-700 px-2.5 py-0.5 text-xs font-semibold rounded-md inline-flex items-center border transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent shadow hover:bg-primary/80">
                   Verified
                 </Badge>
               }
               {business.needs_help &&
-              <Badge className="bg-fuchsia-100 text-fuchsia-700">
+              <Badge className="bg-sky-100 text-sky-700">
                   Seeking Help
                 </Badge>
               }
@@ -72,7 +72,7 @@ export default function BusinessCard({ business, user }) {
             variant="ghost"
             size="icon"
             onClick={() => toggleFavoriteMutation.mutate()}
-            className={isFavorited ? "text-pink-600" : "text-gray-400"}>
+            className={isFavorited ? "text-blue-600" : "text-gray-400"}>
 
               <Heart className={`w-5 h-5 ${isFavorited ? "fill-current" : ""}`} />
             </Button>
@@ -104,7 +104,7 @@ export default function BusinessCard({ business, user }) {
           </div>
         </div>
 
-        <Button asChild className="bg-sky-200 text-gray-800 px-4 py-2 text-sm font-medium rounded-md shadow hover:bg-primary/90 w-full">
+        <Button asChild className="bg-blue-900 text-white px-4 py-2 text-sm font-medium rounded-md shadow hover:bg-blue-800 w-full">
           <Link to={createPageUrl("BusinessDetail") + `?id=${business.id}`}>
             View Details
             <ExternalLink className="w-4 h-4 ml-2" />

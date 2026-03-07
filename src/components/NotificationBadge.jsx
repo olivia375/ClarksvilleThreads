@@ -107,7 +107,7 @@ export default function NotificationBadge({ user }) {
                             variant="link"
                             size="sm"
                             onClick={() => handleMarkAsRead(notification.id)}
-                            className="text-xs p-0 h-auto mt-2 text-emerald-600"
+                            className="text-xs p-0 h-auto mt-2 text-blue-600"
                           >
                             Mark as read
                           </Button>

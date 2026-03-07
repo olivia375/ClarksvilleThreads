@@ -31,10 +31,10 @@ import {
 // Distinct colors for each opportunity, cycling through the list
 const OPP_COLORS = [
   { dot: "bg-blue-500", light: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
-  { dot: "bg-emerald-500", light: "bg-emerald-50", text: "text-emerald-700", border: "border-emerald-200" },
-  { dot: "bg-purple-500", light: "bg-purple-50", text: "text-purple-700", border: "border-purple-200" },
+  { dot: "bg-blue-600", light: "bg-blue-50", text: "text-blue-700", border: "border-blue-200" },
+  { dot: "bg-indigo-500", light: "bg-sky-50", text: "text-indigo-700", border: "border-indigo-200" },
   { dot: "bg-orange-500", light: "bg-orange-50", text: "text-orange-700", border: "border-orange-200" },
-  { dot: "bg-pink-500", light: "bg-pink-50", text: "text-pink-700", border: "border-pink-200" },
+  { dot: "bg-sky-500", light: "bg-sky-50", text: "text-sky-700", border: "border-sky-200" },
   { dot: "bg-teal-500", light: "bg-teal-50", text: "text-teal-700", border: "border-teal-200" },
 ];
 
@@ -80,7 +80,7 @@ function StatusBadge({ status }) {
     confirmed: "bg-green-100 text-green-700",
     pending: "bg-yellow-100 text-yellow-700",
     in_progress: "bg-blue-100 text-blue-700",
-    completed: "bg-purple-100 text-purple-700",
+    completed: "bg-purple-100 text-indigo-700",
     cancelled: "bg-red-100 text-red-700",
   };
   return (
@@ -461,7 +461,7 @@ function StatusBadge({ status }) {
     confirmed: "bg-green-100 text-green-700",
     pending: "bg-yellow-100 text-yellow-700",
     in_progress: "bg-blue-100 text-blue-700",
-    completed: "bg-purple-100 text-purple-700",
+    completed: "bg-purple-100 text-indigo-700",
     cancelled: "bg-red-100 text-red-700",
   };
   return (

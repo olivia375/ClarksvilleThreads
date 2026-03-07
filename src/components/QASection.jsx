@@ -51,7 +51,7 @@ Question: ${userQuestion}`,
     <Card className="border-none shadow-lg">
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-2xl">
-          <MessageCircle className="w-6 h-6 text-emerald-600" />
+          <MessageCircle className="w-6 h-6 text-blue-600" />
           Ask Us Anything
         </CardTitle>
         <p className="text-gray-600">
@@ -82,15 +82,15 @@ Question: ${userQuestion}`,
                 className={`flex gap-3 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
               >
                 {msg.role === "assistant" && (
-                  <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
-                    <Bot className="w-5 h-5 text-emerald-600" />
+                  <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                    <Bot className="w-5 h-5 text-blue-600" />
                   </div>
                 )}
                 
                 <div
                   className={`max-w-[80%] p-4 rounded-xl ${
                     msg.role === "user"
-                      ? "bg-emerald-600 text-white"
+                      ? "bg-blue-900 text-white"
                       : "bg-gray-100 text-gray-900"
                   }`}
                 >
@@ -111,8 +111,8 @@ Question: ${userQuestion}`,
                 animate={{ opacity: 1, y: 0 }}
                 className="flex gap-3"
               >
-                <div className="w-8 h-8 bg-emerald-100 rounded-full flex items-center justify-center flex-shrink-0">
-                  <Bot className="w-5 h-5 text-emerald-600" />
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center flex-shrink-0">
+                  <Bot className="w-5 h-5 text-blue-600" />
                 </div>
                 <div className="bg-gray-100 p-4 rounded-xl">
                   <div className="flex gap-1">
@@ -138,7 +138,7 @@ Question: ${userQuestion}`,
           <Button
             type="submit"
             disabled={isLoading || !question.trim()}
-            className="bg-emerald-600 hover:bg-emerald-700"
+            className="bg-blue-900 hover:bg-blue-800"
           >
             <Send className="w-4 h-4" />
           </Button>
@@ -158,7 +158,7 @@ Question: ${userQuestion}`,
                 <button
                   key={suggestion}
                   onClick={() => setQuestion(suggestion)}
-                  className="text-xs px-3 py-1.5 bg-emerald-50 text-emerald-700 rounded-full hover:bg-emerald-100 transition-colors"
+                  className="text-xs px-3 py-1.5 bg-blue-50 text-blue-700 rounded-full hover:bg-blue-100 transition-colors"
                 >
                   {suggestion}
                 </button>

@@ -29,7 +29,7 @@ export default function Favorites() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900" />
       </div>
     );
   }
@@ -48,7 +48,7 @@ export default function Favorites() {
 
       {favoritesLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900" />
         </div>
       ) : favoriteBusinesses.length === 0 ? (
         <Card className="border-none shadow-lg">

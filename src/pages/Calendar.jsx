@@ -145,7 +145,7 @@ export default function Calendar() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900" />
       </div>
     );
   }
@@ -162,7 +162,7 @@ export default function Calendar() {
       </div>
 
       {/* Hours Overview Card */}
-      <Card className="mb-8 border-none shadow-lg bg-gradient-to-br from-emerald-50 to-blue-50">
+      <Card className="mb-8 border-none shadow-lg bg-gradient-to-br from-blue-50 to-sky-50">
         <CardContent className="p-6">
           <div className="grid sm:grid-cols-3 gap-6">
             <div className="text-center">
@@ -204,7 +204,7 @@ export default function Calendar() {
             </div>
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-1">Scheduled</p>
-              <p className="text-3xl font-bold text-emerald-600">{scheduledHoursThisMonth}h</p>
+              <p className="text-3xl font-bold text-blue-700">{scheduledHoursThisMonth}h</p>
               <p className="text-xs text-gray-500 mt-1">
                 {hoursAvailable}h remaining
               </p>
@@ -266,18 +266,18 @@ export default function Calendar() {
                     onClick={() => setSelectedDate(day)}
                     className={`aspect-square rounded-lg p-2 text-sm transition-all ${
                       isSelected
-                        ? 'bg-emerald-600 text-white font-bold'
+                        ? 'bg-blue-900 text-white font-bold'
                         : isCurrentDay
                         ? 'bg-blue-100 text-blue-700 font-semibold'
                         : hasCommit
-                        ? 'bg-emerald-50 text-emerald-700 hover:bg-emerald-100'
+                        ? 'bg-sky-50 text-sky-700 hover:bg-sky-100'
                         : 'hover:bg-gray-50 text-gray-700'
                     }`}
                   >
                     <div className="flex flex-col items-center justify-center h-full">
                       <span>{format(day, 'd')}</span>
                       {hasCommit && !isSelected && (
-                        <div className="w-1 h-1 bg-emerald-500 rounded-full mt-1" />
+                        <div className="w-1 h-1 bg-blue-600 rounded-full mt-1" />
                       )}
                     </div>
                   </button>
@@ -291,7 +291,7 @@ export default function Calendar() {
                 <span className="text-gray-600">Today</span>
               </div>
               <div className="flex items-center gap-2">
-                <div className="w-4 h-4 bg-emerald-50 rounded" />
+                <div className="w-4 h-4 bg-sky-50 rounded" />
                 <span className="text-gray-600">Has Commitments</span>
               </div>
             </div>
@@ -303,14 +303,14 @@ export default function Calendar() {
           <Card className="border-none shadow-lg">
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <CalendarIcon className="w-5 h-5 text-emerald-600" />
+                <CalendarIcon className="w-5 h-5 text-blue-700" />
                 {format(selectedDate, 'MMMM d, yyyy')}
               </CardTitle>
             </CardHeader>
             <CardContent>
               {isLoading ? (
                 <div className="flex justify-center py-8">
-                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-emerald-600" />
+                  <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-900" />
                 </div>
               ) : selectedDateCommitments.length === 0 ? (
                 <div className="text-center py-8">
@@ -383,7 +383,7 @@ export default function Calendar() {
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-gray-600">Completed</span>
-                <span className="font-bold text-purple-600">
+                <span className="font-bold text-indigo-600">
                   {commitments.filter(c => c.status === 'completed').length}
                 </span>
               </div>

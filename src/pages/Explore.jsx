@@ -125,10 +125,10 @@ export default function Explore() {
 
       {/* Recommended For You Section */}
       {recommendedBusinesses.length > 0 && (
-        <Card className="mb-8 border-none shadow-lg bg-gradient-to-br from-emerald-50 to-blue-50">
+        <Card className="mb-8 border-none shadow-lg bg-gradient-to-br from-blue-50 to-sky-50">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-2xl">
-              <Sparkles className="w-6 h-6 text-emerald-600" />
+              <Sparkles className="w-6 h-6 text-blue-600" />
               Recommended For You
             </CardTitle>
             <p className="text-gray-600 mt-2">
@@ -192,7 +192,7 @@ export default function Explore() {
               variant={showNeedsHelpOnly ? "default" : "outline"}
               size="sm"
               onClick={() => setShowNeedsHelpOnly(!showNeedsHelpOnly)}
-              className={showNeedsHelpOnly ? "bg-emerald-600 hover:bg-emerald-700" : ""}
+              className={showNeedsHelpOnly ? "bg-blue-900 hover:bg-blue-800" : ""}
             >
               <Filter className="w-4 h-4 mr-2" />
               {showNeedsHelpOnly ? "Showing: Needs Help" : "Show All"}
@@ -207,7 +207,7 @@ export default function Explore() {
       {/* Business Grid */}
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900" />
         </div>
       ) : filteredBusinesses.length === 0 ? (
         <Card className="border-none shadow-lg">
