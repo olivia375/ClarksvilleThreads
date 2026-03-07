@@ -80,7 +80,7 @@ export default function Layout({ children, currentPageName }) {
                 <Building2 className="w-5 h-5 text-white" />
               </div>
               <div className="hidden sm:block">
-                <h1 className="text-xl font-semibold text-gray-900 tracking-tight">CommunityConnect</h1>
+                <h1 className="text-xl font-semibold text-gray-900 tracking-tight">BeyondNeighborly</h1>
                 <p className="text-xs text-gray-500">Local Volunteer Platform</p>
               </div>
             </Link>
@@ -133,7 +133,7 @@ export default function Layout({ children, currentPageName }) {
                         <Building2 className="w-5 h-5 text-white" />
                       </div>
                       <div>
-                        <h2 className="font-semibold text-gray-900">CommunityConnect</h2>
+                        <h2 className="font-semibold text-gray-900">BeyondNeighborly</h2>
                         <p className="text-xs text-gray-500">Menu</p>
                       </div>
                     </div>
@@ -193,7 +193,7 @@ export default function Layout({ children, currentPageName }) {
       <footer className="bg-white border-t border-gray-200 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-gray-500 text-sm">
-            <p>© 2025 CommunityConnect. Connecting volunteers with local businesses.</p>
+            <p>© 2025 BeyondNeighborly. Connecting volunteers with local businesses.</p>
           </div>
         </div>
       </footer>

@@ -17,7 +17,7 @@ router.post('/invoke', optionalAuth, async (req, res, next) => {
     }
 
     // Create the system-contextualized prompt
-    const contextualizedPrompt = `You are a helpful assistant for CommonThread, a volunteer platform connecting volunteers with local businesses and nonprofits.
+    const contextualizedPrompt = `You are a helpful assistant for BeyondNeighborly, a volunteer platform connecting volunteers with local businesses and nonprofits.
 
 Answer the following question about volunteering, community service, or how to use the platform. Be friendly, concise, and encouraging.
 If the question is about how to volunteer, mention that users can browse businesses in the Explore page, check opportunities in the Opportunities page, and complete their volunteer profile.
@@ -48,7 +48,7 @@ router.post('/conversation', optionalAuth, async (req, res, next) => {
       return res.status(400).json({ error: 'Messages array is required' });
     }
 
-    const defaultSystemPrompt = `You are a helpful assistant for CommonThread, a volunteer platform connecting volunteers with local businesses and nonprofits. Be friendly, concise, and encouraging.`;
+    const defaultSystemPrompt = `You are a helpful assistant for BeyondNeighborly, a volunteer platform connecting volunteers with local businesses and nonprofits. Be friendly, concise, and encouraging.`;
 
     const response = await llmService.chatWithHistory(messages, {
       systemPrompt: systemPrompt || defaultSystemPrompt,

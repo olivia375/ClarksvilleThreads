@@ -68,13 +68,13 @@ export default function Profile() {
       // Send welcome email on first profile completion
       if (isFirstTimeSetup && (data.age || data.hours_available)) {
         await integrations.Core.SendEmail({
-          from_name: "CommunityConnect",
+          from_name: "BeyondNeighborly",
           to: user.email,
-          subject: "Welcome to CommunityConnect! 🎉",
+          subject: "Welcome to BeyondNeighborly! 🎉",
           body: `
             <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
               <div style="background: linear-gradient(135deg, #ec4899 0%, #a855f7 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-                <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to CommunityConnect!</h1>
+                <h1 style="color: white; margin: 0; font-size: 28px;">Welcome to BeyondNeighborly!</h1>
               </div>
               
               <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px;">
@@ -109,7 +109,7 @@ export default function Profile() {
                 </p>
                 
                 <p style="color: #6b7280; font-size: 14px;">
-                  - The CommunityConnect Team
+                  - The BeyondNeighborly Team
                 </p>
               </div>
             </div>
