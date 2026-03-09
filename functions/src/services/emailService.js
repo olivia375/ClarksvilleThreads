@@ -20,7 +20,7 @@ export const sendEmail = async ({ to, subject, body, from_name = 'BeyondNeighbor
   const msg = {
     to,
     from: {
-      email: 'noreply@commonthread.app',
+      email: 'noreply@beyondneighborly.com',
       name: from_name
     },
     subject,
