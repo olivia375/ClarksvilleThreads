@@ -84,7 +84,7 @@ function StatusBadge({ status }) {
     cancelled: "bg-red-100 text-red-700",
   };
   return (
-    <Badge className={`text-[10px] py-0 h-4 ${styles[status] || "bg-gray-100 text-gray-700"}`}>
+    <Badge className={`text-[10px] py-0 h-4 flex-shrink-0 ${styles[status] || "bg-gray-100 text-gray-700"}`}>
       {status}
     </Badge>
   );
@@ -453,20 +453,5 @@ export default function BusinessCalendar() {
         </div>
       </div>
     </div>
-  );
-}
-
-function StatusBadge({ status }) {
-  const styles = {
-    confirmed: "bg-green-100 text-green-700",
-    pending: "bg-yellow-100 text-yellow-700",
-    in_progress: "bg-blue-100 text-blue-700",
-    completed: "bg-purple-100 text-indigo-700",
-    cancelled: "bg-red-100 text-red-700",
-  };
-  return (
-    <Badge className={`text-[10px] py-0 h-4 flex-shrink-0 ${styles[status] || "bg-gray-100 text-gray-700"}`}>
-      {status}
-    </Badge>
   );
 }
