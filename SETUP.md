@@ -1,6 +1,6 @@
-# CommonThread - GCP Setup Guide
+# BeyondNeighborly - GCP Setup Guide
 
-This guide walks through setting up the CommonThread volunteer platform on Google Cloud Platform.
+This guide walks through setting up the BeyondNeighborly volunteer platform on Google Cloud Platform.
 
 ## Prerequisites
 
@@ -247,4 +247,4 @@ All endpoints are prefixed with `/api`
 ## Support
 
 For issues, please open a GitHub issue at:
-https://github.com/your-org/commonthread/issues
+https://github.com/your-org/beyondneighborly/issues

@@ -99,7 +99,7 @@ export default function Profile() {
                 </p>
                 
                 <div style="text-align: center; margin: 30px 0;">
-                  <a href="https://communityconnect.com/explore" style="background: #ec4899; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
+                  <a href="https://beyondneighborly.com/explore" style="background: #ec4899; color: white; padding: 12px 30px; text-decoration: none; border-radius: 6px; display: inline-block; font-weight: bold;">
                     Explore Opportunities
                   </a>
                 </div>

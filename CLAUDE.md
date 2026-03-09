@@ -1,10 +1,10 @@
-# CLAUDE.md — ClarksvilleThreads (CommunityConnect)
+# CLAUDE.md — ClarksvilleThreads (BeyondNeighborly)
 
 This file provides guidance for AI assistants working on the ClarksvilleThreads codebase.
 
 ## Project Overview
 
-**CommunityConnect** is a local volunteer platform that connects volunteers with businesses and nonprofits. The app supports browsing organizations, discovering volunteer opportunities, tracking commitments, sending notifications, and managing business profiles.
+**BeyondNeighborly** is a local volunteer platform that connects volunteers with businesses and nonprofits. The app supports browsing organizations, discovering volunteer opportunities, tracking commitments, sending notifications, and managing business profiles.
 
 - **Frontend:** React SPA hosted on Firebase Hosting
 - **Backend:** Cloud Functions (Express) on Firebase
