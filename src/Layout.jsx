@@ -85,7 +85,7 @@ export default function Layout({ children, currentPageName }) {
               </div>
               <div className="hidden sm:block">
                 <h1 className="text-xl font-semibold text-white tracking-tight">BeyondNeighborly</h1>
-                <p className="text-xs text-blue-200">Local Volunteer Platform</p>
+                <p className="text-xs text-blue-200">Volunteer With Your Neighbors</p>
               </div>
             </Link>
 
@@ -197,7 +197,7 @@ export default function Layout({ children, currentPageName }) {
       <footer className="bg-blue-900 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-blue-200 text-sm">
-            <p>© 2025 BeyondNeighborly. Connecting volunteers with local businesses.</p>
+            <p>© 2026 BeyondNeighborly. Connecting volunteers with local businesses.</p>
           </div>
         </div>
       </footer>
