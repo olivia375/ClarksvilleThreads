@@ -173,7 +173,7 @@ export default function Profile() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-pink-600" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900" />
       </div>
     );
   }
@@ -181,9 +181,9 @@ export default function Profile() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       {saveSuccess && (
-        <Alert className="mb-6 bg-pink-50 border-pink-200">
-          <CheckCircle className="h-4 w-4 text-pink-600" />
-          <AlertDescription className="text-pink-800">
+        <Alert className="mb-6 bg-blue-50 border-blue-200">
+          <CheckCircle className="h-4 w-4 text-blue-600" />
+          <AlertDescription className="text-blue-800">
             Profile updated successfully!
           </AlertDescription>
         </Alert>
@@ -194,32 +194,32 @@ export default function Profile() {
         <div className="lg:col-span-1">
           <Card className="border-none shadow-lg sticky top-24">
             <CardHeader className="text-center pb-4">
-              <div className="w-24 h-24 bg-gradient-to-br from-pink-500 to-purple-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
+              <div className="w-24 h-24 bg-gradient-to-br from-blue-700 to-sky-500 rounded-full mx-auto mb-4 flex items-center justify-center shadow-lg">
                 <User className="w-12 h-12 text-white" />
               </div>
               <CardTitle className="text-2xl">{user.full_name}</CardTitle>
               <p className="text-gray-500">{user.email}</p>
               {user.verified_volunteer && (
-                <Badge className="mt-2 bg-pink-100 text-pink-700">
+                <Badge className="mt-2 bg-blue-100 text-blue-700">
                   <CheckCircle className="w-3 h-3 mr-1" />
                   Verified Volunteer
                 </Badge>
               )}
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="flex items-center gap-3 p-3 bg-pink-50 rounded-lg">
-                <Clock className="w-5 h-5 text-pink-600" />
+              <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
+                <Clock className="w-5 h-5 text-blue-600" />
                 <div>
-                  <p className="text-2xl font-bold text-pink-600">
+                  <p className="text-2xl font-bold text-blue-600">
                     {user.total_hours_volunteered || 0}
                   </p>
                   <p className="text-sm text-gray-600">Hours Volunteered</p>
                 </div>
               </div>
-              <div className="flex items-center gap-3 p-3 bg-purple-50 rounded-lg">
-                <Award className="w-5 h-5 text-purple-600" />
+              <div className="flex items-center gap-3 p-3 bg-sky-50 rounded-lg">
+                <Award className="w-5 h-5 text-sky-600" />
                 <div>
-                  <p className="text-2xl font-bold text-purple-600">
+                  <p className="text-2xl font-bold text-sky-600">
                     {commitments.length}
                   </p>
                   <p className="text-sm text-gray-600">Active Commitments</p>
@@ -247,7 +247,7 @@ export default function Profile() {
                     <Button 
                       onClick={handleSave} 
                       disabled={updateProfileMutation.isPending}
-                      className="bg-pink-600 hover:bg-pink-700"
+                      className="bg-blue-900 hover:bg-blue-800"
                     >
                       <Save className="w-4 h-4 mr-2" />
                       {updateProfileMutation.isPending ? "Saving..." : "Save Changes"}
@@ -359,7 +359,7 @@ export default function Profile() {
                         <Badge
                           key={skill}
                           variant={formData.skills.includes(skill) ? "default" : "outline"}
-                          className={`cursor-pointer ${formData.skills.includes(skill) ? 'bg-pink-600' : ''}`}
+                          className={`cursor-pointer ${formData.skills.includes(skill) ? 'bg-blue-900' : ''}`}
                           onClick={() => handleSkillToggle(skill)}
                         >
                           {skill}
@@ -370,7 +370,7 @@ export default function Profile() {
                 ) : null}
                 <div className="flex flex-wrap gap-2 mt-2">
                   {(isEditing ? formData.skills : user.skills || []).map(skill => (
-                    <Badge key={skill} className="bg-pink-100 text-pink-700 flex items-center gap-1">
+                    <Badge key={skill} className="bg-blue-100 text-blue-700 flex items-center gap-1">
                       {skill}
                       {isEditing && (
                         <X
@@ -394,7 +394,7 @@ export default function Profile() {
                       <Badge
                         key={interest}
                         variant={formData.interests.includes(interest) ? "default" : "outline"}
-                        className={`cursor-pointer ${formData.interests.includes(interest) ? 'bg-purple-600' : ''}`}
+                        className={`cursor-pointer ${formData.interests.includes(interest) ? 'bg-indigo-600' : ''}`}
                         onClick={() => handleInterestToggle(interest)}
                       >
                         {interest}
@@ -404,7 +404,7 @@ export default function Profile() {
                 )}
                 <div className="flex flex-wrap gap-2 mt-2">
                   {(isEditing ? formData.interests : user.interests || []).map(interest => (
-                    <Badge key={interest} className="bg-purple-100 text-purple-700">
+                    <Badge key={interest} className="bg-sky-100 text-sky-700">
                       {interest}
                     </Badge>
                   ))}

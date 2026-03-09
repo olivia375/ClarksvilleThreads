@@ -29,32 +29,32 @@ export default function Home() {
     icon: Building2,
     title: "Discover Local Businesses",
     description: "Find small businesses and nonprofits in your community that need support",
-    color: "pink"
+    color: "blue"
   },
   {
     icon: Heart,
     title: "Make a Difference",
     description: "Share your skills and time to help businesses thrive and grow",
-    color: "rose"
+    color: "sky"
   },
   {
     icon: Users,
     title: "Build Connections",
     description: "Connect with like-minded volunteers and passionate business owners",
-    color: "purple"
+    color: "indigo"
   },
   {
     icon: Award,
     title: "Earn Recognition",
     description: "Track your volunteer hours and receive special offers from businesses you help",
-    color: "fuchsia"
+    color: "cyan"
   }];
 
 
   return (
     <div className="min-h-screen">
       {/* Hero Section */}
-      <section className="bg-[#fffcf5] py-20 relative overflow-hidden sm:py-32">
+      <section className="bg-gradient-to-br from-blue-50 via-sky-50 to-white py-20 relative overflow-hidden sm:py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -62,7 +62,7 @@ export default function Home() {
             transition={{ duration: 0.6 }}
             className="text-center">
 
-            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-50 border border-blue-200 rounded-full mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-1.5 bg-blue-900/10 border border-blue-300 rounded-full mb-6">
               <Star className="w-4 h-4 text-blue-700" />
               <span className="text-sm font-medium text-blue-900">Join Our Community</span>
             </div>
@@ -81,13 +81,13 @@ Support Local Businesses
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <Button asChild size="lg" className="bg-red-400 text-white px-8 py-3 text-base font-medium rounded-lg hover:bg-blue-800 shadow-md hover:shadow-lg transition-all">
+              <Button asChild size="lg" className="bg-blue-900 text-white px-8 py-3 text-base font-medium rounded-lg hover:bg-blue-800 shadow-md hover:shadow-lg transition-all">
                 <Link to={createPageUrl("Profile")}>
                   Get Started
                   <ArrowRight className="w-5 h-5 ml-2" />
                 </Link>
               </Button>
-              <Button asChild size="lg" variant="outline" className="bg-pink-200 px-8 py-3 text-base font-medium rounded-lg border-2 border-gray-300 hover:bg-gray-50">
+              <Button asChild size="lg" variant="outline" className="bg-white px-8 py-3 text-base font-medium rounded-lg border-2 border-blue-200 text-blue-900 hover:bg-blue-50">
                 <Link to={createPageUrl("Explore")}>
                   Explore Opportunities
                 </Link>
@@ -120,7 +120,7 @@ Support Local Businesses
       </section>
 
       {/* Features Section */}
-      <section className="py-20 bg-gray-50">
+      <section className="py-20 bg-white">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center mb-16">
             <h2 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">

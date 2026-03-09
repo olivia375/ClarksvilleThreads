@@ -529,7 +529,7 @@ export default function BusinessSignup() {
                 <div className="flex items-center justify-between rounded-lg border border-gray-200 p-4 bg-gray-50">
                   <div>
                     <p className="font-medium text-gray-900 flex items-center gap-2">
-                      <Zap className="w-4 h-4 text-emerald-600" />
+                      <Zap className="w-4 h-4 text-blue-600" />
                       Auto-Accept Volunteers
                     </p>
                     <p className="text-sm text-gray-500 mt-0.5">

@@ -88,7 +88,7 @@ export default function Opportunities() {
       {/* Opportunities Grid */}
       {isLoading ? (
         <div className="flex items-center justify-center py-20">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900" />
         </div>
       ) : filteredOpportunities.length === 0 ? (
         <Card className="border-none shadow-lg">
@@ -132,7 +132,7 @@ export default function Opportunities() {
                     )}
 
                     {opp.special_offer && (
-                      <div className="flex items-center gap-2 text-sm text-purple-700 bg-purple-50 p-2 rounded">
+                      <div className="flex items-center gap-2 text-sm text-sky-700 bg-sky-50 p-2 rounded">
                         <Tag className="w-4 h-4" />
                         <span className="font-medium">Special offer included!</span>
                       </div>
@@ -158,7 +158,7 @@ export default function Opportunities() {
                   )}
 
                   <div className="mt-auto pt-4">
-                    <Button asChild className="w-full bg-emerald-600 hover:bg-emerald-700">
+                    <Button asChild className="w-full bg-blue-900 hover:bg-blue-800">
                       <Link to={`${createPageUrl("BusinessDetail")}?id=${opp.business_id}`}>
                         View Details & Apply
                       </Link>

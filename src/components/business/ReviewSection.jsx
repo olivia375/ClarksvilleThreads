@@ -76,7 +76,7 @@ export default function ReviewSection({ businessId, business, user }) {
           </CardHeader>
           <CardContent className="space-y-4">
             {!showForm ? (
-              <Button onClick={() => setShowForm(true)} className="bg-emerald-600 hover:bg-emerald-700">
+              <Button onClick={() => setShowForm(true)} className="bg-blue-900 hover:bg-blue-800">
                 Leave a Review
               </Button>
             ) : (
@@ -115,7 +115,7 @@ export default function ReviewSection({ businessId, business, user }) {
                   <Button
                     onClick={handleSubmit}
                     disabled={createReviewMutation.isPending || rating === 0}
-                    className="bg-emerald-600 hover:bg-emerald-700"
+                    className="bg-blue-900 hover:bg-blue-800"
                   >
                     {createReviewMutation.isPending ? "Submitting..." : "Submit Review"}
                   </Button>
@@ -160,7 +160,7 @@ export default function ReviewSection({ businessId, business, user }) {
                 <CardContent className="p-6">
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-full flex items-center justify-center">
+                      <div className="w-10 h-10 bg-gradient-to-br from-blue-700 to-sky-400 rounded-full flex items-center justify-center">
                         <User className="w-5 h-5 text-white" />
                       </div>
                       <div>
@@ -187,7 +187,7 @@ export default function ReviewSection({ businessId, business, user }) {
                     <p className="text-gray-700">{review.comment}</p>
                   )}
                   {review.volunteer_experience && (
-                    <Badge variant="outline" className="mt-3 border-emerald-500 text-emerald-700">
+                    <Badge variant="outline" className="mt-3 border-blue-500 text-blue-700">
                       <CheckCircle className="w-3 h-3 mr-1" />
                       Volunteered Here
                     </Badge>

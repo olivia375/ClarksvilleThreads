@@ -74,7 +74,7 @@ export default function BusinessDetail() {
   if (isLoading || !business) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600" />
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-900" />
       </div>
     );
   }
@@ -92,7 +92,7 @@ export default function BusinessDetail() {
       <Card className="mb-8 border-none shadow-lg">
         <CardContent className="p-8">
           <div className="flex flex-col md:flex-row gap-8">
-            <div className="w-full md:w-48 h-48 bg-gradient-to-br from-emerald-400 to-blue-500 rounded-xl flex items-center justify-center">
+            <div className="w-full md:w-48 h-48 bg-gradient-to-br from-blue-700 to-sky-400 rounded-xl flex items-center justify-center">
               <span className="text-6xl font-bold text-white">
                 {business.name.charAt(0)}
               </span>
@@ -104,10 +104,10 @@ export default function BusinessDetail() {
                   <div className="flex items-center gap-3 mb-2">
                     <h1 className="text-3xl font-bold text-gray-900">{business.name}</h1>
                     {business.verified && (
-                      <CheckCircle className="w-6 h-6 text-emerald-500" />
+                      <CheckCircle className="w-6 h-6 text-blue-500" />
                     )}
                   </div>
-                  <Badge className="bg-emerald-100 text-emerald-700 text-sm">
+                  <Badge className="bg-blue-100 text-blue-700 text-sm">
                     {business.category}
                   </Badge>
                 </div>
@@ -153,7 +153,7 @@ export default function BusinessDetail() {
 
               <div className="flex flex-wrap gap-3 mb-6">
                 {business.needs_help && (
-                  <Badge variant="outline" className="border-emerald-500 text-emerald-700">
+                  <Badge variant="outline" className="border-blue-600 text-blue-700">
                     <Briefcase className="w-4 h-4 mr-1" />
                     Currently Seeking Volunteers
                   </Badge>

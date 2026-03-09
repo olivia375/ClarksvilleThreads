@@ -505,7 +505,7 @@ function OpportunityForm({ initialData = EMPTY_OPP, onSave, onCancel, isSaving }
         <div className="md:col-span-2 flex items-center justify-between rounded-lg border border-gray-200 p-4 bg-gray-50">
           <div>
             <p className="font-medium text-gray-900 flex items-center gap-2">
-              <Zap className="w-4 h-4 text-emerald-600" />
+              <Zap className="w-4 h-4 text-blue-600" />
               Auto-Accept Volunteers
             </p>
             <p className="text-sm text-gray-500 mt-0.5">
@@ -760,7 +760,7 @@ export default function ManageOpportunities() {
                           {opp.urgency}
                         </Badge>
                         {opp.auto_accept && (
-                          <Badge className="text-xs bg-emerald-100 text-emerald-700">
+                          <Badge className="text-xs bg-blue-100 text-blue-700">
                             <Zap className="w-3 h-3 mr-0.5" /> Auto-accept
                           </Badge>
                         )}
