@@ -20,6 +20,14 @@
       "collectionGroup": "volunteer_opportunities",
       "queryScope": "COLLECTION",
       "fields": [
+        { "fieldPath": "business_id", "order": "ASCENDING" },
+        { "fieldPath": "created_at", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "volunteer_opportunities",
+      "queryScope": "COLLECTION",
+      "fields": [
         { "fieldPath": "status", "order": "ASCENDING" },
         { "fieldPath": "created_at", "order": "DESCENDING" }
       ]
@@ -37,6 +45,14 @@
       "queryScope": "COLLECTION",
       "fields": [
         { "fieldPath": "business_id", "order": "ASCENDING" },
+        { "fieldPath": "status", "order": "ASCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "volunteer_commitments",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "opportunity_id", "order": "ASCENDING" },
         { "fieldPath": "status", "order": "ASCENDING" }
       ]
     },
