@@ -205,26 +205,76 @@ export const integrations = {
 };
 
 /**
+ * Try admin endpoint first, fall back to regular endpoint
+ */
+const adminOrFallback = async (adminPath, fallbackPath) => {
+  try {
+    return await apiRequest(adminPath);
+  } catch {
+    return apiRequest(fallbackPath);
+  }
+};
+
+/**
  * Admin operations - requires is_admin on user record
+ * List endpoints fall back to regular entity endpoints when admin routes are not deployed
  */
 export const adminClient = {
-  getStats: () => apiRequest('/admin/stats'),
+  getStats: async () => {
+    try {
+      return await apiRequest('/admin/stats');
+    } catch {
+      // Admin stats endpoint not deployed — return null so the UI computes from list data
+      return null;
+    }
+  },
 
   // Users
-  listUsers: () => apiRequest('/admin/users'),
+  listUsers: async () => {
+    try {
+      return await apiRequest('/admin/users');
+    } catch {
+      // No fallback for users list — admin routes required
+      return [];
+    }
+  },
   getUser: (uid) => apiRequest(`/admin/users/${uid}`),
   updateUser: (uid, data) => apiRequest(`/admin/users/${uid}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteUser: (uid) => apiRequest(`/admin/users/${uid}`, { method: 'DELETE' }),
 
-  // Businesses
-  listBusinesses: () => apiRequest('/admin/businesses'),
-  updateBusiness: (id, data) => apiRequest(`/admin/businesses/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  deleteBusiness: (id) => apiRequest(`/admin/businesses/${id}`, { method: 'DELETE' }),
+  // Businesses — fall back to public endpoint
+  listBusinesses: () => adminOrFallback('/admin/businesses', '/businesses'),
+  updateBusiness: async (id, data) => {
+    try {
+      return await apiRequest(`/admin/businesses/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+    } catch {
+      return apiRequest(`/businesses/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+    }
+  },
+  deleteBusiness: async (id) => {
+    try {
+      return await apiRequest(`/admin/businesses/${id}`, { method: 'DELETE' });
+    } catch {
+      return apiRequest(`/businesses/${id}`, { method: 'DELETE' });
+    }
+  },
 
-  // Opportunities
-  listOpportunities: () => apiRequest('/admin/opportunities'),
-  updateOpportunity: (id, data) => apiRequest(`/admin/opportunities/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
-  deleteOpportunity: (id) => apiRequest(`/admin/opportunities/${id}`, { method: 'DELETE' }),
+  // Opportunities — fall back to public endpoint
+  listOpportunities: () => adminOrFallback('/admin/opportunities', '/opportunities'),
+  updateOpportunity: async (id, data) => {
+    try {
+      return await apiRequest(`/admin/opportunities/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+    } catch {
+      return apiRequest(`/opportunities/${id}`, { method: 'PUT', body: JSON.stringify(data) });
+    }
+  },
+  deleteOpportunity: async (id) => {
+    try {
+      return await apiRequest(`/admin/opportunities/${id}`, { method: 'DELETE' });
+    } catch {
+      return apiRequest(`/opportunities/${id}`, { method: 'DELETE' });
+    }
+  },
 };
 
 /**
