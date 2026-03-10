@@ -197,13 +197,37 @@ export const integrations = {
 };
 
 /**
+ * Admin operations - requires is_admin on user record
+ */
+export const adminClient = {
+  getStats: () => apiRequest('/admin/stats'),
+
+  // Users
+  listUsers: () => apiRequest('/admin/users'),
+  getUser: (uid) => apiRequest(`/admin/users/${uid}`),
+  updateUser: (uid, data) => apiRequest(`/admin/users/${uid}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteUser: (uid) => apiRequest(`/admin/users/${uid}`, { method: 'DELETE' }),
+
+  // Businesses
+  listBusinesses: () => apiRequest('/admin/businesses'),
+  updateBusiness: (id, data) => apiRequest(`/admin/businesses/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteBusiness: (id) => apiRequest(`/admin/businesses/${id}`, { method: 'DELETE' }),
+
+  // Opportunities
+  listOpportunities: () => apiRequest('/admin/opportunities'),
+  updateOpportunity: (id, data) => apiRequest(`/admin/opportunities/${id}`, { method: 'PUT', body: JSON.stringify(data) }),
+  deleteOpportunity: (id) => apiRequest(`/admin/opportunities/${id}`, { method: 'DELETE' }),
+};
+
+/**
  * GCP Client - Main export
  * Provides a similar interface to the Base44 SDK
  */
 const gcpClient = {
   entities,
   auth: authClient,
-  integrations
+  integrations,
+  admin: adminClient
 };
 
 export default gcpClient;

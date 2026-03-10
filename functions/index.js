@@ -12,6 +12,7 @@ import notificationRoutes from './src/routes/notifications.js';
 import favoriteRoutes from './src/routes/favorites.js';
 import reviewRoutes from './src/routes/reviews.js';
 import uploadRoutes from './src/routes/uploads.js';
+import adminRoutes from './src/routes/admin.js';
 
 const app = express();
 
@@ -34,6 +35,7 @@ app.use('/notifications', notificationRoutes);
 app.use('/favorites', favoriteRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/uploads', uploadRoutes);
+app.use('/admin', adminRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
