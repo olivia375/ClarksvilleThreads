@@ -127,7 +127,8 @@ export const entities = {
   },
   Notification: createEntityClient('notifications'),
   Favorite: createEntityClient('favorites'),
-  Review: createEntityClient('reviews')
+  Review: createEntityClient('reviews'),
+  MonthlyAvailability: createEntityClient('monthly-availability')
 };
 
 /**
