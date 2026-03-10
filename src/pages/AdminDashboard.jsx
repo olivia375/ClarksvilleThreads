@@ -65,39 +65,59 @@ function ErrorBanner({ error, label }) {
 }
 
 function StatsOverview() {
-  const { data: stats, isLoading, error } = useQuery({
+  const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["admin", "stats"],
     queryFn: adminClient.getStats,
   });
 
+  // Use list data to compute stats when admin stats endpoint isn't deployed
+  const { data: users = [] } = useQuery({
+    queryKey: ["admin", "users"],
+    queryFn: adminClient.listUsers,
+  });
+  const { data: businesses = [] } = useQuery({
+    queryKey: ["admin", "businesses"],
+    queryFn: adminClient.listBusinesses,
+  });
+  const { data: opportunities = [] } = useQuery({
+    queryKey: ["admin", "opportunities"],
+    queryFn: adminClient.listOpportunities,
+  });
+
+  const computedStats = {
+    total_users: stats?.total_users ?? users.length,
+    total_businesses: stats?.total_businesses ?? businesses.length,
+    total_opportunities: stats?.total_opportunities ?? opportunities.length,
+    total_commitments: stats?.total_commitments ?? 0,
+  };
+
+  const isLoading = statsLoading && users.length === 0 && businesses.length === 0;
+
   const cards = [
-    { label: "Users", value: stats?.total_users, icon: Users, color: "text-blue-600 bg-blue-100" },
-    { label: "Businesses", value: stats?.total_businesses, icon: Building2, color: "text-green-600 bg-green-100" },
-    { label: "Opportunities", value: stats?.total_opportunities, icon: Briefcase, color: "text-purple-600 bg-purple-100" },
-    { label: "Commitments", value: stats?.total_commitments, icon: BarChart3, color: "text-orange-600 bg-orange-100" },
+    { label: "Users", value: computedStats.total_users, icon: Users, color: "text-blue-600 bg-blue-100" },
+    { label: "Businesses", value: computedStats.total_businesses, icon: Building2, color: "text-green-600 bg-green-100" },
+    { label: "Opportunities", value: computedStats.total_opportunities, icon: Briefcase, color: "text-purple-600 bg-purple-100" },
+    { label: "Commitments", value: computedStats.total_commitments, icon: BarChart3, color: "text-orange-600 bg-orange-100" },
   ];
 
   return (
-    <>
-      {error && <ErrorBanner error={error} label="stats" />}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-        {cards.map((c) => (
-          <Card key={c.label}>
-            <CardContent className="p-4 flex items-center gap-3">
-              <div className={`p-2.5 rounded-lg ${c.color}`}>
-                <c.icon className="w-5 h-5" />
-              </div>
-              <div>
-                <p className="text-sm text-gray-500">{c.label}</p>
-                <p className="text-2xl font-bold">
-                  {isLoading ? "..." : (c.value ?? 0)}
-                </p>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-    </>
+    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+      {cards.map((c) => (
+        <Card key={c.label}>
+          <CardContent className="p-4 flex items-center gap-3">
+            <div className={`p-2.5 rounded-lg ${c.color}`}>
+              <c.icon className="w-5 h-5" />
+            </div>
+            <div>
+              <p className="text-sm text-gray-500">{c.label}</p>
+              <p className="text-2xl font-bold">
+                {isLoading ? "..." : (c.value ?? 0)}
+              </p>
+            </div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
   );
 }
 
@@ -191,7 +211,9 @@ function UsersTab() {
               {filtered.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                    No users found
+                    {error
+                      ? "Failed to load users. The admin API functions may need to be redeployed."
+                      : "No users found"}
                   </TableCell>
                 </TableRow>
               ) : (
