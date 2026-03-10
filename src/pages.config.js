@@ -9,6 +9,7 @@ import Favorites from './pages/Favorites';
 import Home from './pages/Home';
 import Opportunities from './pages/Opportunities';
 import Profile from './pages/Profile';
+import UserTypeSelection from './pages/UserTypeSelection';
 import __Layout from './Layout.jsx';
 
 
@@ -24,6 +25,7 @@ export const PAGES = {
     "Home": Home,
     "Opportunities": Opportunities,
     "Profile": Profile,
+    "UserTypeSelection": UserTypeSelection,
 }
 
 export const pagesConfig = {
