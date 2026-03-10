@@ -1,3 +1,4 @@
+import BusinessApplications from './pages/BusinessApplications';
 import BusinessCalendar from './pages/BusinessCalendar';
 import BusinessDashboard from './pages/BusinessDashboard';
 import BusinessDetail from './pages/BusinessDetail';
@@ -13,6 +14,7 @@ import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "BusinessApplications": BusinessApplications,
     "BusinessCalendar": BusinessCalendar,
     "BusinessDashboard": BusinessDashboard,
     "BusinessDetail": BusinessDetail,
