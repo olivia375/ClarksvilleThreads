@@ -26,6 +26,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { format } from "date-fns";
+import VolunteerDateTimeSelector, { formatTime12h } from "@/components/business/VolunteerDateTimeSelector";
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const TODAY = format(new Date(), "yyyy-MM-dd");
@@ -37,12 +38,17 @@ const EMPTY_OPP = {
   schedule_type: "one_time",
   event_date: "",
   event_hours: 4,
+  event_start_time: "",
+  event_end_time: "",
   recurring_days: [],
   recurring_hours_per_day: 4,
+  recurring_start_time: "",
+  recurring_end_time: "",
   recurring_start_date: "",
   recurring_end_date: "",
   blackout_dates: [],
   date_overrides: {},
+  calendar_dates: [],
   slots_needed: 1,
   min_age: 0,
   urgency: "medium",
@@ -71,12 +77,17 @@ function normalizeInitialData(data) {
     schedule_type: data.schedule_type || "one_time",
     event_date: data.event_date || data.available_from || "",
     event_hours: data.event_hours || data.hours_needed || 4,
+    event_start_time: data.event_start_time || "",
+    event_end_time: data.event_end_time || "",
     recurring_days: data.recurring_days || [],
     recurring_hours_per_day: data.recurring_hours_per_day || data.hours_needed || 4,
+    recurring_start_time: data.recurring_start_time || "",
+    recurring_end_time: data.recurring_end_time || "",
     recurring_start_date: data.recurring_start_date || data.available_from || "",
     recurring_end_date: data.recurring_end_date || data.available_to || "",
     blackout_dates: data.blackout_dates || [],
     date_overrides: data.date_overrides || {},
+    calendar_dates: data.calendar_dates || [],
     skills_needed: Array.isArray(data.skills_needed)
       ? data.skills_needed.join(", ")
       : data.skills_needed || "",
@@ -158,30 +169,37 @@ function ScheduleBuilder({ form, set }) {
       </div>
 
       {form.schedule_type === "one_time" ? (
-        <div className="grid md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
-          <div>
-            <Label>Event Date *</Label>
-            <Input
-              type="date"
-              value={form.event_date}
-              onChange={(e) => set("event_date", e.target.value)}
-              min={TODAY}
-              className="mt-2"
-            />
+        <div className="space-y-4">
+          <div className="grid md:grid-cols-2 gap-4 p-4 bg-gray-50 rounded-lg border border-gray-100">
+            <div>
+              <Label>Event Date *</Label>
+              <Input
+                type="date"
+                value={form.event_date}
+                onChange={(e) => set("event_date", e.target.value)}
+                min={TODAY}
+                className="mt-2"
+              />
+            </div>
+            <div>
+              <Label>Hours Needed (max 12) *</Label>
+              <Input
+                type="number"
+                min="1"
+                max="12"
+                value={form.event_hours}
+                onChange={(e) =>
+                  set("event_hours", Math.min(12, Math.max(1, parseInt(e.target.value) || 1)))
+                }
+                className="mt-2"
+              />
+            </div>
           </div>
-          <div>
-            <Label>Hours Needed (max 12) *</Label>
-            <Input
-              type="number"
-              min="1"
-              max="12"
-              value={form.event_hours}
-              onChange={(e) =>
-                set("event_hours", Math.min(12, Math.max(1, parseInt(e.target.value) || 1)))
-              }
-              className="mt-2"
-            />
-          </div>
+          <VolunteerDateTimeSelector
+            form={form}
+            set={set}
+            scheduleType="one_time"
+          />
         </div>
       ) : (
         <div className="space-y-5 p-4 bg-gray-50 rounded-lg border border-gray-100">
@@ -326,6 +344,12 @@ function ScheduleBuilder({ form, set }) {
               </div>
             )}
           </div>
+
+          <VolunteerDateTimeSelector
+            form={form}
+            set={set}
+            scheduleType="recurring"
+          />
         </div>
       )}
     </div>
@@ -364,6 +388,11 @@ function OpportunityForm({ initialData = EMPTY_OPP, onSave, onCancel, isSaving }
         ? form.event_date
         : form.recurring_end_date || null;
 
+    const start_time =
+      form.schedule_type === "one_time" ? form.event_start_time : form.recurring_start_time;
+    const end_time =
+      form.schedule_type === "one_time" ? form.event_end_time : form.recurring_end_time;
+
     onSave({
       ...form,
       slots_needed: parseInt(form.slots_needed) || 1,
@@ -373,6 +402,9 @@ function OpportunityForm({ initialData = EMPTY_OPP, onSave, onCancel, isSaving }
       hours_needed: parseInt(hours) || 4,
       available_from,
       available_to,
+      start_time: start_time || null,
+      end_time: end_time || null,
+      calendar_dates: form.calendar_dates || [],
       skills_needed: form.skills_needed
         ? form.skills_needed
             .split(",")
@@ -536,11 +568,15 @@ function OpportunityForm({ initialData = EMPTY_OPP, onSave, onCancel, isSaving }
 }
 
 function ScheduleSummary({ opp }) {
+  const timeStr = opp.start_time
+    ? ` · ${formatTime12h(opp.start_time)}${opp.end_time ? ` – ${formatTime12h(opp.end_time)}` : ""}`
+    : "";
+
   if (opp.schedule_type === "one_time" && opp.event_date) {
     return (
       <span className="flex items-center gap-1">
         <CalendarDays className="w-3 h-3" />
-        {opp.event_date} · {opp.event_hours || opp.hours_needed || "?"}h
+        {opp.event_date} · {opp.event_hours || opp.hours_needed || "?"}h{timeStr}
       </span>
     );
   }
@@ -553,6 +589,7 @@ function ScheduleSummary({ opp }) {
         {(opp.recurring_hours_per_day || opp.hours_needed) && (
           <> · {opp.recurring_hours_per_day || opp.hours_needed}h/day</>
         )}
+        {timeStr}
         {opp.recurring_start_date && <> from {opp.recurring_start_date}</>}
       </span>
     );
@@ -564,6 +601,7 @@ function ScheduleSummary({ opp }) {
         {opp.available_from}
         {opp.available_to ? ` – ${opp.available_to}` : ""}
         {opp.hours_needed ? ` · ${opp.hours_needed}h` : ""}
+        {timeStr}
       </span>
     );
   }

@@ -1,3 +1,4 @@
+import BusinessApplications from './pages/BusinessApplications';
 import BusinessCalendar from './pages/BusinessCalendar';
 import BusinessDashboard from './pages/BusinessDashboard';
 import BusinessDetail from './pages/BusinessDetail';
@@ -10,10 +11,12 @@ import Home from './pages/Home';
 import Opportunities from './pages/Opportunities';
 import Profile from './pages/Profile';
 import AdminDashboard from './pages/AdminDashboard';
+import UserTypeSelection from './pages/UserTypeSelection';
 import __Layout from './Layout.jsx';
 
 
 export const PAGES = {
+    "BusinessApplications": BusinessApplications,
     "BusinessCalendar": BusinessCalendar,
     "BusinessDashboard": BusinessDashboard,
     "BusinessDetail": BusinessDetail,
@@ -26,6 +29,7 @@ export const PAGES = {
     "Opportunities": Opportunities,
     "Profile": Profile,
     "AdminDashboard": AdminDashboard,
+    "UserTypeSelection": UserTypeSelection,
 }
 
 export const pagesConfig = {

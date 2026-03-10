@@ -17,6 +17,7 @@ import {
   Plus,
   Settings,
   Calendar,
+  FileText,
 } from "lucide-react";
 
 const URGENCY_COLORS = {
@@ -114,6 +115,12 @@ export default function BusinessDashboard() {
           </div>
         </div>
         <div className="flex gap-2">
+          <Link to={createPageUrl("BusinessApplications")}>
+            <Button variant="outline" size="sm">
+              <FileText className="w-4 h-4 mr-2" />
+              Review Applications
+            </Button>
+          </Link>
           <Link to={createPageUrl("BusinessCalendar")}>
             <Button variant="outline" size="sm">
               <Calendar className="w-4 h-4 mr-2" />
@@ -190,12 +197,17 @@ export default function BusinessDashboard() {
 
       {/* Pending Applications Alert */}
       {pendingCommitments.length > 0 && (
-        <div className="mb-6 flex items-center gap-3 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
-          <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0" />
-          <p className="text-yellow-800 text-sm font-medium">
-            You have {pendingCommitments.length} pending volunteer application{pendingCommitments.length > 1 ? "s" : ""} awaiting review.
-          </p>
-        </div>
+        <Link to={createPageUrl("BusinessApplications")} className="block mb-6">
+          <div className="flex items-center justify-between p-4 bg-yellow-50 border border-yellow-200 rounded-lg hover:bg-yellow-100 transition-colors">
+            <div className="flex items-center gap-3">
+              <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0" />
+              <p className="text-yellow-800 text-sm font-medium">
+                You have {pendingCommitments.length} pending volunteer application{pendingCommitments.length > 1 ? "s" : ""} awaiting review.
+              </p>
+            </div>
+            <span className="text-yellow-700 text-sm font-medium">Review &rarr;</span>
+          </div>
+        </Link>
       )}
 
       {/* Opportunities */}

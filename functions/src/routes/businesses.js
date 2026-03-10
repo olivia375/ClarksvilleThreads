@@ -123,6 +123,33 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
 });
 
 /**
+ * PUT /businesses/:id/email-notifications
+ * Toggle email notifications for a business
+ */
+router.put('/:id/email-notifications', verifyToken, async (req, res, next) => {
+  try {
+    const business = await businessService.getBusinessById(req.params.id);
+
+    if (!business) {
+      return res.status(404).json({ error: 'Business not found' });
+    }
+
+    if (business.owner_uid !== req.user.uid) {
+      return res.status(403).json({ error: 'Not authorized to update this business' });
+    }
+
+    const { enabled } = req.body;
+    const updatedBusiness = await businessService.updateBusiness(req.params.id, {
+      email_notifications_enabled: !!enabled
+    });
+
+    res.json(updatedBusiness);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * POST /businesses/filter
  * Filter businesses by criteria
  */

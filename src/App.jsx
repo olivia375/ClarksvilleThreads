@@ -5,7 +5,7 @@ import { queryClientInstance } from '@/lib/query-client'
 
 import NavigationTracker from '@/lib/NavigationTracker'
 import { pagesConfig } from './pages.config'
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate, useLocation } from 'react-router-dom';
 import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/FirebaseAuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
@@ -17,6 +17,25 @@ const MainPage = mainPageKey ? Pages[mainPageKey] : <></>;
 const LayoutWrapper = ({ children, currentPageName }) => Layout ?
   <Layout currentPageName={currentPageName}>{children}</Layout>
   : <>{children}</>;
+
+// Pages that don't require account_type to be set
+const PUBLIC_PAGES = ["Home", "Explore", "BusinessDetail", "Opportunities", "UserTypeSelection"];
+
+const AccountTypeGuard = ({ children, pageName }) => {
+  const { user, isAuthenticated } = useAuth();
+
+  // Don't redirect for unauthenticated users or public pages
+  if (!isAuthenticated || !user || PUBLIC_PAGES.includes(pageName)) {
+    return children;
+  }
+
+  // If user is authenticated but hasn't selected account type, redirect to selection
+  if (!user.account_type) {
+    return <Navigate to="/UserTypeSelection" replace />;
+  }
+
+  return children;
+};
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, isAuthenticated, navigateToLogin } = useAuth();
@@ -45,18 +64,22 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/" element={
-        <LayoutWrapper currentPageName={mainPageKey}>
-          <MainPage />
-        </LayoutWrapper>
+        <AccountTypeGuard pageName={mainPageKey}>
+          <LayoutWrapper currentPageName={mainPageKey}>
+            <MainPage />
+          </LayoutWrapper>
+        </AccountTypeGuard>
       } />
       {Object.entries(Pages).map(([path, Page]) => (
         <Route
           key={path}
           path={`/${path}`}
           element={
-            <LayoutWrapper currentPageName={path}>
-              <Page />
-            </LayoutWrapper>
+            <AccountTypeGuard pageName={path}>
+              <LayoutWrapper currentPageName={path}>
+                <Page />
+              </LayoutWrapper>
+            </AccountTypeGuard>
           }
         />
       ))}

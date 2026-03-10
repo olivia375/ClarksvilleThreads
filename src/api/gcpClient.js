@@ -106,7 +106,15 @@ const createEntityClient = (collection) => ({
  * Entities - Maps to Firestore collections
  */
 export const entities = {
-  Business: createEntityClient('businesses'),
+  Business: {
+    ...createEntityClient('businesses'),
+    toggleEmailNotifications: async (id, enabled) => {
+      return apiRequest(`/businesses/${id}/email-notifications`, {
+        method: 'PUT',
+        body: JSON.stringify({ enabled })
+      });
+    }
+  },
   VolunteerOpportunity: createEntityClient('opportunities'),
   VolunteerCommitment: createEntityClient('commitments'),
   Notification: createEntityClient('notifications'),

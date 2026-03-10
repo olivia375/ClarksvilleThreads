@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Badge } from "@/components/ui/badge";
-import { User, Award, Clock, MapPin, X, Plus, Save, CheckCircle, AlertCircle } from "lucide-react";
+import { User, Award, Clock, MapPin, X, Plus, Save, CheckCircle, AlertCircle, Phone, Mail } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const COMMON_SKILLS = [
@@ -31,6 +31,9 @@ export default function Profile() {
   const [formData, setFormData] = useState({
     age: "",
     hours_available: "",
+    phone: "",
+    city: "",
+    state: "",
     skills: [],
     interests: [],
     location: "",
@@ -43,6 +46,9 @@ export default function Profile() {
       setFormData({
         age: user.age || "",
         hours_available: user.hours_available || "",
+        phone: user.phone || "",
+        city: user.city || "",
+        state: user.state || "",
         skills: user.skills || [],
         interests: user.interests || [],
         location: user.location || "",
@@ -166,7 +172,10 @@ export default function Profile() {
     updateProfileMutation.mutate({
       ...formData,
       age: formData.age ? parseInt(formData.age) : null,
-      hours_available: formData.hours_available ? parseInt(formData.hours_available) : null
+      hours_available: formData.hours_available ? parseInt(formData.hours_available) : null,
+      phone: formData.phone || null,
+      city: formData.city || null,
+      state: formData.state || null
     });
   };
 
@@ -299,14 +308,75 @@ export default function Profile() {
                   )}
                 </div>
 
+                <div>
+                  <Label htmlFor="phone">Phone Number</Label>
+                  {isEditing ? (
+                    <Input
+                      id="phone"
+                      type="tel"
+                      value={formData.phone}
+                      onChange={(e) => setFormData({...formData, phone: e.target.value})}
+                      placeholder="(555) 123-4567"
+                      className="mt-2"
+                    />
+                  ) : (
+                    <p className="mt-2 text-gray-900 flex items-center gap-2">
+                      {user.phone ? (
+                        <>
+                          <Phone className="w-4 h-4 text-gray-500" />
+                          {user.phone}
+                        </>
+                      ) : "Not set"}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="email-display">Email</Label>
+                  <p className="mt-2 text-gray-900 flex items-center gap-2">
+                    <Mail className="w-4 h-4 text-gray-500" />
+                    {user.email}
+                  </p>
+                </div>
+
+                <div>
+                  <Label htmlFor="city">City</Label>
+                  {isEditing ? (
+                    <Input
+                      id="city"
+                      value={formData.city}
+                      onChange={(e) => setFormData({...formData, city: e.target.value})}
+                      placeholder="Clarksville"
+                      className="mt-2"
+                    />
+                  ) : (
+                    <p className="mt-2 text-gray-900">{user.city || "Not set"}</p>
+                  )}
+                </div>
+
+                <div>
+                  <Label htmlFor="state">State</Label>
+                  {isEditing ? (
+                    <Input
+                      id="state"
+                      value={formData.state}
+                      onChange={(e) => setFormData({...formData, state: e.target.value})}
+                      placeholder="TN"
+                      className="mt-2"
+                    />
+                  ) : (
+                    <p className="mt-2 text-gray-900">{user.state || "Not set"}</p>
+                  )}
+                </div>
+
                 <div className="md:col-span-2">
-                  <Label htmlFor="location">Location</Label>
+                  <Label htmlFor="location">Address / Neighborhood</Label>
                   {isEditing ? (
                     <Input
                       id="location"
                       value={formData.location}
                       onChange={(e) => setFormData({...formData, location: e.target.value})}
-                      placeholder="City, State"
+                      placeholder="123 Main St or Downtown area"
                       className="mt-2"
                     />
                   ) : (
@@ -320,7 +390,6 @@ export default function Profile() {
                     </p>
                   )}
                 </div>
-                {/* Removed Phone Number section */}
               </div>
 
               <div>
