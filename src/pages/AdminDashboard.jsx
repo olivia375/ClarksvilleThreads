@@ -51,8 +51,21 @@ import { Textarea } from "@/components/ui/textarea";
 
 // ─── Stats Cards ─────────────────────────────────────────
 
+function ErrorBanner({ error, label }) {
+  return (
+    <div className="rounded-lg border border-red-200 bg-red-50 p-4 mb-4">
+      <p className="text-sm font-medium text-red-800">
+        Failed to load {label}: {error?.message || "Unknown error"}
+      </p>
+      <p className="text-xs text-red-600 mt-1">
+        The admin API may not be deployed yet. Try redeploying Cloud Functions.
+      </p>
+    </div>
+  );
+}
+
 function StatsOverview() {
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading, error } = useQuery({
     queryKey: ["admin", "stats"],
     queryFn: adminClient.getStats,
   });
@@ -65,23 +78,26 @@ function StatsOverview() {
   ];
 
   return (
-    <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-      {cards.map((c) => (
-        <Card key={c.label}>
-          <CardContent className="p-4 flex items-center gap-3">
-            <div className={`p-2.5 rounded-lg ${c.color}`}>
-              <c.icon className="w-5 h-5" />
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">{c.label}</p>
-              <p className="text-2xl font-bold">
-                {isLoading ? "..." : (c.value ?? 0)}
-              </p>
-            </div>
-          </CardContent>
-        </Card>
-      ))}
-    </div>
+    <>
+      {error && <ErrorBanner error={error} label="stats" />}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {cards.map((c) => (
+          <Card key={c.label}>
+            <CardContent className="p-4 flex items-center gap-3">
+              <div className={`p-2.5 rounded-lg ${c.color}`}>
+                <c.icon className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-sm text-gray-500">{c.label}</p>
+                <p className="text-2xl font-bold">
+                  {isLoading ? "..." : (c.value ?? 0)}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+    </>
   );
 }
 
@@ -117,7 +133,7 @@ function UsersTab() {
   const [editUser, setEditUser] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const { data: users = [], isLoading } = useQuery({
+  const { data: users = [], isLoading, error } = useQuery({
     queryKey: ["admin", "users"],
     queryFn: adminClient.listUsers,
   });
@@ -151,6 +167,7 @@ function UsersTab() {
 
   return (
     <>
+      {error && <ErrorBanner error={error} label="users" />}
       <SearchBar value={search} onChange={setSearch} placeholder="Search users by name or email..." />
 
       {isLoading ? (
@@ -328,7 +345,7 @@ function BusinessesTab() {
   const [editBiz, setEditBiz] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const { data: businesses = [], isLoading } = useQuery({
+  const { data: businesses = [], isLoading, error } = useQuery({
     queryKey: ["admin", "businesses"],
     queryFn: adminClient.listBusinesses,
   });
@@ -362,6 +379,7 @@ function BusinessesTab() {
 
   return (
     <>
+      {error && <ErrorBanner error={error} label="businesses" />}
       <SearchBar value={search} onChange={setSearch} placeholder="Search businesses by name or category..." />
 
       {isLoading ? (
@@ -515,7 +533,7 @@ function OpportunitiesTab() {
   const [editOpp, setEditOpp] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const { data: opportunities = [], isLoading } = useQuery({
+  const { data: opportunities = [], isLoading, error } = useQuery({
     queryKey: ["admin", "opportunities"],
     queryFn: adminClient.listOpportunities,
   });
@@ -549,6 +567,7 @@ function OpportunitiesTab() {
 
   return (
     <>
+      {error && <ErrorBanner error={error} label="opportunities" />}
       <SearchBar value={search} onChange={setSearch} placeholder="Search opportunities by title or status..." />
 
       {isLoading ? (
