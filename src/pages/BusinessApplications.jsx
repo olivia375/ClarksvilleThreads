@@ -52,6 +52,11 @@ export default function BusinessApplications() {
     queryKey: ["my-business", user?.uid],
     queryFn: () => entities.Business.getMyBusiness(),
     enabled: !!user?.uid && !!user?.is_business_owner,
+  // Fetch business by owner (doesn't rely on user.business_id)
+  const { data: business, isLoading: isLoadingBusiness } = useQuery({
+    queryKey: ["my-business", user?.uid],
+    queryFn: () => entities.Business.getMyBusiness(),
+    enabled: !!user?.is_business_owner,
   });
 
   const businessId = business?.id || user?.business_id;
@@ -61,8 +66,13 @@ export default function BusinessApplications() {
     queryFn: () =>
       entities.VolunteerOpportunity.filter({ business_id: businessId }),
     enabled: !!businessId,
+    queryKey: ["opportunities", business?.id],
+    queryFn: () =>
+      entities.VolunteerOpportunity.filter({ business_id: business.id }),
+    enabled: !!business?.id,
   });
 
+  // Use dedicated business commitments endpoint
   const { data: commitments = [], isLoading: isLoadingCommitments } = useQuery({
     queryKey: ["commitments-business-all", businessId],
     queryFn: async () => {
@@ -74,6 +84,9 @@ export default function BusinessApplications() {
       return all.flat();
     },
     enabled: opportunities.length > 0,
+    queryKey: ["commitments-business-all", business?.id],
+    queryFn: () => entities.VolunteerCommitment.getByBusiness(business.id),
+    enabled: !!business?.id,
   });
 
   const updateStatusMutation = useMutation({
@@ -93,7 +106,7 @@ export default function BusinessApplications() {
     mutationFn: (enabled) =>
       entities.Business.toggleEmailNotifications(business.id, enabled),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["business"] });
+      queryClient.invalidateQueries({ queryKey: ["my-business"] });
       toast.success("Email notification preference saved");
     },
     onError: (err) => {

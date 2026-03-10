@@ -51,17 +51,53 @@ import { Textarea } from "@/components/ui/textarea";
 
 // ─── Stats Cards ─────────────────────────────────────────
 
+function ErrorBanner({ error, label }) {
+  return (
+    <div className="rounded-lg border border-red-200 bg-red-50 p-4 mb-4">
+      <p className="text-sm font-medium text-red-800">
+        Failed to load {label}: {error?.message || "Unknown error"}
+      </p>
+      <p className="text-xs text-red-600 mt-1">
+        The admin API may not be deployed yet. Try redeploying Cloud Functions.
+      </p>
+    </div>
+  );
+}
+
 function StatsOverview() {
-  const { data: stats, isLoading } = useQuery({
+  const { data: stats, isLoading: statsLoading } = useQuery({
     queryKey: ["admin", "stats"],
     queryFn: adminClient.getStats,
   });
 
+  // Use list data to compute stats when admin stats endpoint isn't deployed
+  const { data: users = [] } = useQuery({
+    queryKey: ["admin", "users"],
+    queryFn: adminClient.listUsers,
+  });
+  const { data: businesses = [] } = useQuery({
+    queryKey: ["admin", "businesses"],
+    queryFn: adminClient.listBusinesses,
+  });
+  const { data: opportunities = [] } = useQuery({
+    queryKey: ["admin", "opportunities"],
+    queryFn: adminClient.listOpportunities,
+  });
+
+  const computedStats = {
+    total_users: stats?.total_users ?? users.length,
+    total_businesses: stats?.total_businesses ?? businesses.length,
+    total_opportunities: stats?.total_opportunities ?? opportunities.length,
+    total_commitments: stats?.total_commitments ?? 0,
+  };
+
+  const isLoading = statsLoading && users.length === 0 && businesses.length === 0;
+
   const cards = [
-    { label: "Users", value: stats?.total_users, icon: Users, color: "text-blue-600 bg-blue-100" },
-    { label: "Businesses", value: stats?.total_businesses, icon: Building2, color: "text-green-600 bg-green-100" },
-    { label: "Opportunities", value: stats?.total_opportunities, icon: Briefcase, color: "text-purple-600 bg-purple-100" },
-    { label: "Commitments", value: stats?.total_commitments, icon: BarChart3, color: "text-orange-600 bg-orange-100" },
+    { label: "Users", value: computedStats.total_users, icon: Users, color: "text-blue-600 bg-blue-100" },
+    { label: "Businesses", value: computedStats.total_businesses, icon: Building2, color: "text-green-600 bg-green-100" },
+    { label: "Opportunities", value: computedStats.total_opportunities, icon: Briefcase, color: "text-purple-600 bg-purple-100" },
+    { label: "Commitments", value: computedStats.total_commitments, icon: BarChart3, color: "text-orange-600 bg-orange-100" },
   ];
 
   return (
@@ -117,7 +153,7 @@ function UsersTab() {
   const [editUser, setEditUser] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const { data: users = [], isLoading } = useQuery({
+  const { data: users = [], isLoading, error } = useQuery({
     queryKey: ["admin", "users"],
     queryFn: adminClient.listUsers,
   });
@@ -151,6 +187,7 @@ function UsersTab() {
 
   return (
     <>
+      {error && <ErrorBanner error={error} label="users" />}
       <SearchBar value={search} onChange={setSearch} placeholder="Search users by name or email..." />
 
       {isLoading ? (
@@ -174,7 +211,9 @@ function UsersTab() {
               {filtered.length === 0 ? (
                 <TableRow>
                   <TableCell colSpan={6} className="text-center py-8 text-gray-500">
-                    No users found
+                    {error
+                      ? "Failed to load users. The admin API functions may need to be redeployed."
+                      : "No users found"}
                   </TableCell>
                 </TableRow>
               ) : (
@@ -328,7 +367,7 @@ function BusinessesTab() {
   const [editBiz, setEditBiz] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const { data: businesses = [], isLoading } = useQuery({
+  const { data: businesses = [], isLoading, error } = useQuery({
     queryKey: ["admin", "businesses"],
     queryFn: adminClient.listBusinesses,
   });
@@ -362,6 +401,7 @@ function BusinessesTab() {
 
   return (
     <>
+      {error && <ErrorBanner error={error} label="businesses" />}
       <SearchBar value={search} onChange={setSearch} placeholder="Search businesses by name or category..." />
 
       {isLoading ? (
@@ -515,7 +555,7 @@ function OpportunitiesTab() {
   const [editOpp, setEditOpp] = useState(null);
   const [deleteTarget, setDeleteTarget] = useState(null);
 
-  const { data: opportunities = [], isLoading } = useQuery({
+  const { data: opportunities = [], isLoading, error } = useQuery({
     queryKey: ["admin", "opportunities"],
     queryFn: adminClient.listOpportunities,
   });
@@ -549,6 +589,7 @@ function OpportunitiesTab() {
 
   return (
     <>
+      {error && <ErrorBanner error={error} label="opportunities" />}
       <SearchBar value={search} onChange={setSearch} placeholder="Search opportunities by title or status..." />
 
       {isLoading ? (
