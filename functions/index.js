@@ -13,6 +13,7 @@ import favoriteRoutes from './src/routes/favorites.js';
 import reviewRoutes from './src/routes/reviews.js';
 import uploadRoutes from './src/routes/uploads.js';
 import adminRoutes from './src/routes/admin.js';
+import monthlyAvailabilityRoutes from './src/routes/monthly-availability.js';
 
 const app = express();
 
@@ -36,6 +37,7 @@ app.use('/favorites', favoriteRoutes);
 app.use('/reviews', reviewRoutes);
 app.use('/uploads', uploadRoutes);
 app.use('/admin', adminRoutes);
+app.use('/monthly-availability', monthlyAvailabilityRoutes);
 
 // Error handling middleware
 app.use((err, req, res, next) => {
