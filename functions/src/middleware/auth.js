@@ -65,4 +65,25 @@ export const optionalAuth = async (req, res, next) => {
   next();
 };
 
-export default { verifyToken, optionalAuth };
+/**
+ * Admin-only middleware - requires verifyToken to have run first
+ * Checks the user's Firestore document for is_admin === true
+ */
+export const requireAdmin = async (req, res, next) => {
+  if (!req.user) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+
+  try {
+    const userDoc = await db.collection(collections.users).doc(req.user.uid).get();
+    if (!userDoc.exists || !userDoc.data().is_admin) {
+      return res.status(403).json({ error: 'Admin access required' });
+    }
+    next();
+  } catch (error) {
+    console.error('Admin check failed:', error);
+    return res.status(500).json({ error: 'Failed to verify admin status' });
+  }
+};
+
+export default { verifyToken, optionalAuth, requireAdmin };

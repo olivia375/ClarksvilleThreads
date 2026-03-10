@@ -10,6 +10,7 @@ import Favorites from './pages/Favorites';
 import Home from './pages/Home';
 import Opportunities from './pages/Opportunities';
 import Profile from './pages/Profile';
+import AdminDashboard from './pages/AdminDashboard';
 import UserTypeSelection from './pages/UserTypeSelection';
 import __Layout from './Layout.jsx';
 
@@ -27,6 +28,7 @@ export const PAGES = {
     "Home": Home,
     "Opportunities": Opportunities,
     "Profile": Profile,
+    "AdminDashboard": AdminDashboard,
     "UserTypeSelection": UserTypeSelection,
 }
 
