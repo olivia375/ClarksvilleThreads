@@ -47,21 +47,24 @@ export default function BusinessApplications() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [opportunityFilter, setOpportunityFilter] = useState("all");
 
+  // Discover business by owner UID (works even if user.business_id is not set)
   const { data: business, isLoading: isLoadingBusiness } = useQuery({
-    queryKey: ["business", user?.business_id],
-    queryFn: () => entities.Business.get(user.business_id),
-    enabled: !!user?.business_id,
+    queryKey: ["my-business", user?.uid],
+    queryFn: () => entities.Business.getMyBusiness(),
+    enabled: !!user?.uid && !!user?.is_business_owner,
   });
 
+  const businessId = business?.id || user?.business_id;
+
   const { data: opportunities = [] } = useQuery({
-    queryKey: ["opportunities", user?.business_id],
+    queryKey: ["opportunities", businessId],
     queryFn: () =>
-      entities.VolunteerOpportunity.filter({ business_id: user.business_id }),
-    enabled: !!user?.business_id,
+      entities.VolunteerOpportunity.filter({ business_id: businessId }),
+    enabled: !!businessId,
   });
 
   const { data: commitments = [], isLoading: isLoadingCommitments } = useQuery({
-    queryKey: ["commitments-business-all", user?.business_id],
+    queryKey: ["commitments-business-all", businessId],
     queryFn: async () => {
       const all = await Promise.all(
         opportunities.map((opp) =>

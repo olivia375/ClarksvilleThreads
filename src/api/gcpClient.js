@@ -108,6 +108,9 @@ const createEntityClient = (collection) => ({
 export const entities = {
   Business: {
     ...createEntityClient('businesses'),
+    getMyBusiness: async () => {
+      return apiRequest('/businesses/owner/me');
+    },
     toggleEmailNotifications: async (id, enabled) => {
       return apiRequest(`/businesses/${id}/email-notifications`, {
         method: 'PUT',

@@ -617,10 +617,19 @@ export default function ManageOpportunities() {
 
   const focusId = searchParams.get("focus");
 
+  // Discover business by owner UID (works even if user.business_id is not set)
+  const { data: business } = useQuery({
+    queryKey: ["my-business", user?.uid],
+    queryFn: () => entities.Business.getMyBusiness(),
+    enabled: !!user?.uid && !!user?.is_business_owner,
+  });
+
+  const businessId = business?.id || user?.business_id;
+
   const { data: opportunities = [], isLoading } = useQuery({
-    queryKey: ["opportunities", user?.business_id],
-    queryFn: () => entities.VolunteerOpportunity.filter({ business_id: user.business_id }),
-    enabled: !!user?.business_id,
+    queryKey: ["opportunities", businessId],
+    queryFn: () => entities.VolunteerOpportunity.filter({ business_id: businessId }),
+    enabled: !!businessId,
   });
 
   // Auto-open the focused opportunity
@@ -637,10 +646,10 @@ export default function ManageOpportunities() {
         ...data,
         status: "open",
         slots_filled: 0,
-        business_id: user.business_id,
+        business_id: businessId,
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["opportunities", user?.business_id] });
+      queryClient.invalidateQueries({ queryKey: ["opportunities", businessId] });
       setShowAddForm(false);
       toast.success("Opportunity added.");
     },
@@ -652,7 +661,7 @@ export default function ManageOpportunities() {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => entities.VolunteerOpportunity.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["opportunities", user?.business_id] });
+      queryClient.invalidateQueries({ queryKey: ["opportunities", businessId] });
       setEditingId(null);
       toast.success("Opportunity updated.");
     },
@@ -664,7 +673,7 @@ export default function ManageOpportunities() {
   const deleteMutation = useMutation({
     mutationFn: (id) => entities.VolunteerOpportunity.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["opportunities", user?.business_id] });
+      queryClient.invalidateQueries({ queryKey: ["opportunities", businessId] });
       toast.success("Opportunity deleted.");
     },
     onError: (err) => {
