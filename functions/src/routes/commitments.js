@@ -150,7 +150,7 @@ router.post('/', verifyToken, async (req, res, next) => {
       related_business_id: business.id
     });
 
-    // Send email
+    // Send confirmation email to volunteer
     try {
       await emailService.sendApplicationConfirmation({
         userEmail: user.email,
@@ -162,7 +162,40 @@ router.post('/', verifyToken, async (req, res, next) => {
         status
       });
     } catch (emailError) {
-      console.error('Failed to send email:', emailError);
+      console.error('Failed to send volunteer email:', emailError);
+    }
+
+    // Notify business owner (in-app notification)
+    const businessOwnerNotificationMessage = status === 'confirmed'
+      ? `${user.full_name} has been auto-confirmed for "${opportunity.title}".`
+      : `${user.full_name} has applied for "${opportunity.title}" and is awaiting your review.`;
+
+    await notificationService.createNotification({
+      user_email: business.owner_email || business.email,
+      type: 'new_application',
+      title: 'New Volunteer Application',
+      message: businessOwnerNotificationMessage,
+      related_commitment_id: commitment.id,
+      related_business_id: business.id
+    });
+
+    // Send email to business owner if email notifications are enabled
+    if (business.email_notifications_enabled !== false) {
+      try {
+        await emailService.sendNewApplicationNotification({
+          businessEmail: business.owner_email || business.email,
+          businessName: business.name,
+          volunteerName: user.full_name,
+          volunteerEmail: user.email,
+          opportunityTitle: opportunity.title,
+          hoursCommitted: hours_committed,
+          startDate: new Date(start_date).toLocaleDateString(),
+          status,
+          notes
+        });
+      } catch (emailError) {
+        console.error('Failed to send business owner email:', emailError);
+      }
     }
 
     res.status(201).json(commitment);

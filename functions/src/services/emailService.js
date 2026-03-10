@@ -140,8 +140,76 @@ export const sendWelcomeEmail = async ({ userEmail, userName }) => {
   return sendEmail({ to: userEmail, subject, body });
 };
 
+/**
+ * Send email to business owner when a new volunteer application is received
+ */
+export const sendNewApplicationNotification = async ({
+  businessEmail,
+  businessName,
+  volunteerName,
+  volunteerEmail,
+  opportunityTitle,
+  hoursCommitted,
+  startDate,
+  status,
+  notes
+}) => {
+  const isAutoConfirmed = status === 'confirmed';
+
+  const subject = isAutoConfirmed
+    ? `New Volunteer Auto-Confirmed: ${volunteerName} for ${opportunityTitle}`
+    : `New Volunteer Application: ${volunteerName} for ${opportunityTitle}`;
+
+  const body = `
+    <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+      <div style="background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+        <h1 style="color: white; margin: 0; font-size: 24px;">
+          ${isAutoConfirmed ? 'Volunteer Auto-Confirmed' : 'New Volunteer Application'}
+        </h1>
+      </div>
+
+      <div style="background: #f9fafb; padding: 30px; border-radius: 0 0 10px 10px;">
+        <h2 style="color: #1f2937; margin-top: 0;">Hi ${businessName} Team!</h2>
+
+        <p style="color: #4b5563; font-size: 16px; line-height: 1.6;">
+          ${isAutoConfirmed
+            ? `<strong>${volunteerName}</strong> has been automatically confirmed for your opportunity. They met all requirements.`
+            : `<strong>${volunteerName}</strong> has applied to volunteer and is awaiting your review.`
+          }
+        </p>
+
+        <div style="background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid ${isAutoConfirmed ? '#10b981' : '#f59e0b'};">
+          <h3 style="color: ${isAutoConfirmed ? '#10b981' : '#f59e0b'}; margin-top: 0;">Application Details</h3>
+          <table style="width: 100%; color: #4b5563;">
+            <tr><td style="padding: 8px 0;"><strong>Volunteer:</strong></td><td>${volunteerName}</td></tr>
+            <tr><td style="padding: 8px 0;"><strong>Email:</strong></td><td>${volunteerEmail}</td></tr>
+            <tr><td style="padding: 8px 0;"><strong>Opportunity:</strong></td><td>${opportunityTitle}</td></tr>
+            <tr><td style="padding: 8px 0;"><strong>Hours:</strong></td><td>${hoursCommitted} hours</td></tr>
+            <tr><td style="padding: 8px 0;"><strong>Start Date:</strong></td><td>${startDate}</td></tr>
+            ${notes ? `<tr><td style="padding: 8px 0;"><strong>Notes:</strong></td><td>${notes}</td></tr>` : ''}
+            <tr><td style="padding: 8px 0;"><strong>Status:</strong></td><td><span style="color: ${isAutoConfirmed ? '#10b981' : '#f59e0b'}; font-weight: bold;">${status.toUpperCase()}</span></td></tr>
+          </table>
+        </div>
+
+        ${!isAutoConfirmed ? `
+        <p style="color: #4b5563; font-size: 14px;">
+          Please log in to your BeyondNeighborly dashboard to review and approve or decline this application.
+        </p>
+        ` : ''}
+
+        <p style="color: #6b7280; font-size: 14px; margin-top: 30px; padding-top: 20px; border-top: 1px solid #e5e7eb;">
+          - The BeyondNeighborly Team
+        </p>
+      </div>
+    </div>
+  `;
+
+  return sendEmail({ to: businessEmail, subject, body });
+};
+
 export default {
   sendEmail,
   sendApplicationConfirmation,
+  sendNewApplicationNotification,
   sendWelcomeEmail
 };
