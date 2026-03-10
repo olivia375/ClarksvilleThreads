@@ -123,6 +123,15 @@ router.post('/', verifyToken, async (req, res, next) => {
       return res.status(404).json({ error: 'Business not found' });
     }
 
+    // Prevent duplicate commitments for the same volunteer + opportunity
+    const existingCommitments = await commitmentService.getCommitmentsByOpportunity(opportunity_id);
+    const alreadyApplied = existingCommitments.find(
+      c => c.volunteer_email === user.email && ['pending', 'confirmed', 'in_progress'].includes(c.status)
+    );
+    if (alreadyApplied) {
+      return res.status(200).json(alreadyApplied);
+    }
+
     // Check if slots are available
     if (opportunity.slots_needed > 0 && opportunity.slots_filled >= opportunity.slots_needed) {
       return res.status(400).json({ error: 'This opportunity is already full' });

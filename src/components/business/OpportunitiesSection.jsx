@@ -305,6 +305,7 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
 
   const handleApply = (e) => {
     e.preventDefault();
+    if (applyMutation.isPending) return;
     // Validate hours don't exceed the scheduled max
     if (availableDates !== null && selectedDateInfo) {
       const h = parseInt(applicationData.hours_committed);
