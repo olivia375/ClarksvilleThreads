@@ -142,12 +142,12 @@ router.post('/', verifyToken, async (req, res, next) => {
 
     // Calculate scheduled hours for the selected month
     const selectedMonth = new Date(start_date);
-    const existingCommitments = await commitmentService.getCommitmentsByVolunteer(
+    const volunteerCommitments = await commitmentService.getCommitmentsByVolunteer(
       user.email,
       ['confirmed', 'in_progress']
     );
 
-    const scheduledHoursInMonth = existingCommitments
+    const scheduledHoursInMonth = volunteerCommitments
       .filter(c => {
         if (!c.start_date) return false;
         const commitmentDate = new Date(c.start_date);
