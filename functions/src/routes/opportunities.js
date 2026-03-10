@@ -24,6 +24,24 @@ router.get('/', optionalAuth, async (req, res, next) => {
 });
 
 /**
+ * GET /opportunities/business/:businessId
+ * Get opportunities for a specific business
+ * NOTE: Must be defined before /:id to avoid Express treating "business" as an id
+ */
+router.get('/business/:businessId', optionalAuth, async (req, res, next) => {
+  try {
+    const { status } = req.query;
+    const opportunities = await opportunityService.getOpportunitiesByBusiness(
+      req.params.businessId,
+      status
+    );
+    res.json(opportunities);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * GET /opportunities/:id
  * Get a single opportunity by ID
  */
@@ -40,16 +58,14 @@ router.get('/:id', optionalAuth, async (req, res, next) => {
 });
 
 /**
- * GET /opportunities/business/:businessId
- * Get opportunities for a specific business
+ * POST /opportunities/filter
+ * Filter opportunities by criteria
+ * NOTE: Must be defined before POST / to avoid route conflicts
  */
-router.get('/business/:businessId', optionalAuth, async (req, res, next) => {
+router.post('/filter', optionalAuth, async (req, res, next) => {
   try {
-    const { status } = req.query;
-    const opportunities = await opportunityService.getOpportunitiesByBusiness(
-      req.params.businessId,
-      status
-    );
+    const { filters = {}, sort = '-created_at', limit = 100 } = req.body;
+    const opportunities = await opportunityService.listOpportunities(filters, sort, limit);
     res.json(opportunities);
   } catch (error) {
     next(error);
@@ -127,20 +143,6 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
 
     await opportunityService.deleteOpportunity(req.params.id);
     res.json({ success: true });
-  } catch (error) {
-    next(error);
-  }
-});
-
-/**
- * POST /opportunities/filter
- * Filter opportunities by criteria
- */
-router.post('/filter', optionalAuth, async (req, res, next) => {
-  try {
-    const { filters = {}, sort = '-created_at', limit = 100 } = req.body;
-    const opportunities = await opportunityService.listOpportunities(filters, sort, limit);
-    res.json(opportunities);
   } catch (error) {
     next(error);
   }

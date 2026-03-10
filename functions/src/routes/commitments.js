@@ -29,6 +29,30 @@ router.get('/', verifyToken, async (req, res, next) => {
 });
 
 /**
+ * GET /commitments/business/:businessId
+ * Get commitments for a specific business
+ * NOTE: Must be defined before /:id to avoid Express treating "business" as an id
+ */
+router.get('/business/:businessId', verifyToken, async (req, res, next) => {
+  try {
+    // Verify user owns the business
+    const business = await businessService.getBusinessById(req.params.businessId);
+    if (!business || business.owner_uid !== req.user.uid) {
+      return res.status(403).json({ error: 'Not authorized to view these commitments' });
+    }
+
+    const { status } = req.query;
+    const commitments = await commitmentService.getCommitmentsByBusiness(
+      req.params.businessId,
+      status ? status.split(',') : null
+    );
+    res.json(commitments);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * GET /commitments/:id
  * Get a single commitment by ID
  */
@@ -45,22 +69,34 @@ router.get('/:id', verifyToken, async (req, res, next) => {
 });
 
 /**
- * GET /commitments/business/:businessId
- * Get commitments for a specific business
+ * POST /commitments/filter
+ * Filter commitments by criteria
+ * NOTE: Must be defined before POST / to avoid route conflicts
  */
-router.get('/business/:businessId', verifyToken, async (req, res, next) => {
+router.post('/filter', verifyToken, async (req, res, next) => {
   try {
-    // Verify user owns the business
-    const business = await businessService.getBusinessById(req.params.businessId);
-    if (!business || business.owner_uid !== req.user.uid) {
-      return res.status(403).json({ error: 'Not authorized to view these commitments' });
+    const user = await userService.getUserByUid(req.user.uid);
+    const { filters = {} } = req.body;
+    const { volunteer_email, business_id, opportunity_id, status } = filters;
+
+    // If filtering by business, verify ownership
+    if (business_id) {
+      const business = await businessService.getBusinessById(business_id);
+      if (business && business.owner_uid === req.user.uid) {
+        const commitments = await commitmentService.getCommitmentsByBusiness(business_id, status);
+        return res.json(commitments);
+      }
     }
 
-    const { status } = req.query;
-    const commitments = await commitmentService.getCommitmentsByBusiness(
-      req.params.businessId,
-      status ? status.split(',') : null
-    );
+    // If filtering by opportunity, return commitments for that opportunity
+    if (opportunity_id) {
+      const commitments = await commitmentService.getCommitmentsByOpportunity(opportunity_id);
+      return res.json(commitments);
+    }
+
+    // Otherwise, return user's own commitments
+    const email = volunteer_email || user.email;
+    const commitments = await commitmentService.getCommitmentsByVolunteer(email, status);
     res.json(commitments);
   } catch (error) {
     next(error);
@@ -280,40 +316,6 @@ router.delete('/:id', verifyToken, async (req, res, next) => {
 
     await commitmentService.deleteCommitment(req.params.id);
     res.json({ success: true });
-  } catch (error) {
-    next(error);
-  }
-});
-
-/**
- * POST /commitments/filter
- * Filter commitments by criteria
- */
-router.post('/filter', verifyToken, async (req, res, next) => {
-  try {
-    const user = await userService.getUserByUid(req.user.uid);
-    const { filters = {} } = req.body;
-    const { volunteer_email, business_id, opportunity_id, status } = filters;
-
-    // If filtering by business, verify ownership
-    if (business_id) {
-      const business = await businessService.getBusinessById(business_id);
-      if (business && business.owner_uid === req.user.uid) {
-        const commitments = await commitmentService.getCommitmentsByBusiness(business_id, status);
-        return res.json(commitments);
-      }
-    }
-
-    // If filtering by opportunity, return commitments for that opportunity
-    if (opportunity_id) {
-      const commitments = await commitmentService.getCommitmentsByOpportunity(opportunity_id);
-      return res.json(commitments);
-    }
-
-    // Otherwise, return user's own commitments
-    const email = volunteer_email || user.email;
-    const commitments = await commitmentService.getCommitmentsByVolunteer(email, status);
-    res.json(commitments);
   } catch (error) {
     next(error);
   }

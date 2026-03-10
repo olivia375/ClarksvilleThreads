@@ -640,7 +640,7 @@ export default function ManageOpportunities() {
         business_id: user.business_id,
       }),
     onSuccess: () => {
-      queryClient.invalidateQueries(["opportunities", user?.business_id]);
+      queryClient.invalidateQueries({ queryKey: ["opportunities", user?.business_id] });
       setShowAddForm(false);
       toast.success("Opportunity added.");
     },
@@ -652,7 +652,7 @@ export default function ManageOpportunities() {
   const updateMutation = useMutation({
     mutationFn: ({ id, data }) => entities.VolunteerOpportunity.update(id, data),
     onSuccess: () => {
-      queryClient.invalidateQueries(["opportunities", user?.business_id]);
+      queryClient.invalidateQueries({ queryKey: ["opportunities", user?.business_id] });
       setEditingId(null);
       toast.success("Opportunity updated.");
     },
@@ -664,7 +664,7 @@ export default function ManageOpportunities() {
   const deleteMutation = useMutation({
     mutationFn: (id) => entities.VolunteerOpportunity.delete(id),
     onSuccess: () => {
-      queryClient.invalidateQueries(["opportunities", user?.business_id]);
+      queryClient.invalidateQueries({ queryKey: ["opportunities", user?.business_id] });
       toast.success("Opportunity deleted.");
     },
     onError: (err) => {

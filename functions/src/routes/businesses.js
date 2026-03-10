@@ -19,6 +19,23 @@ router.get('/', optionalAuth, async (req, res, next) => {
 });
 
 /**
+ * GET /businesses/owner/me
+ * Get the business owned by the current user
+ * NOTE: Must be defined before /:id to avoid Express treating "owner" as an id
+ */
+router.get('/owner/me', verifyToken, async (req, res, next) => {
+  try {
+    const business = await businessService.getBusinessByOwner(req.user.uid);
+    if (!business) {
+      return res.status(404).json({ error: 'No business found for this user' });
+    }
+    res.json(business);
+  } catch (error) {
+    next(error);
+  }
+});
+
+/**
  * GET /businesses/:id
  * Get a single business by ID
  */
@@ -35,16 +52,15 @@ router.get('/:id', optionalAuth, async (req, res, next) => {
 });
 
 /**
- * GET /businesses/owner/me
- * Get the business owned by the current user
+ * POST /businesses/filter
+ * Filter businesses by criteria
+ * NOTE: Must be defined before POST / to avoid route conflicts
  */
-router.get('/owner/me', verifyToken, async (req, res, next) => {
+router.post('/filter', optionalAuth, async (req, res, next) => {
   try {
-    const business = await businessService.getBusinessByOwner(req.user.uid);
-    if (!business) {
-      return res.status(404).json({ error: 'No business found for this user' });
-    }
-    res.json(business);
+    const { filters = {}, limit = 100 } = req.body;
+    const businesses = await businessService.filterBusinesses(filters, limit);
+    res.json(businesses);
   } catch (error) {
     next(error);
   }
@@ -144,20 +160,6 @@ router.put('/:id/email-notifications', verifyToken, async (req, res, next) => {
     });
 
     res.json(updatedBusiness);
-  } catch (error) {
-    next(error);
-  }
-});
-
-/**
- * POST /businesses/filter
- * Filter businesses by criteria
- */
-router.post('/filter', optionalAuth, async (req, res, next) => {
-  try {
-    const { filters = {}, limit = 100 } = req.body;
-    const businesses = await businessService.filterBusinesses(filters, limit);
-    res.json(businesses);
   } catch (error) {
     next(error);
   }
