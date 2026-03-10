@@ -47,6 +47,11 @@ export default function BusinessApplications() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [opportunityFilter, setOpportunityFilter] = useState("all");
 
+  // Discover business by owner UID (works even if user.business_id is not set)
+  const { data: business, isLoading: isLoadingBusiness } = useQuery({
+    queryKey: ["my-business", user?.uid],
+    queryFn: () => entities.Business.getMyBusiness(),
+    enabled: !!user?.uid && !!user?.is_business_owner,
   // Fetch business by owner (doesn't rely on user.business_id)
   const { data: business, isLoading: isLoadingBusiness } = useQuery({
     queryKey: ["my-business", user?.uid],
@@ -54,7 +59,13 @@ export default function BusinessApplications() {
     enabled: !!user?.is_business_owner,
   });
 
+  const businessId = business?.id || user?.business_id;
+
   const { data: opportunities = [] } = useQuery({
+    queryKey: ["opportunities", businessId],
+    queryFn: () =>
+      entities.VolunteerOpportunity.filter({ business_id: businessId }),
+    enabled: !!businessId,
     queryKey: ["opportunities", business?.id],
     queryFn: () =>
       entities.VolunteerOpportunity.filter({ business_id: business.id }),
@@ -63,6 +74,16 @@ export default function BusinessApplications() {
 
   // Use dedicated business commitments endpoint
   const { data: commitments = [], isLoading: isLoadingCommitments } = useQuery({
+    queryKey: ["commitments-business-all", businessId],
+    queryFn: async () => {
+      const all = await Promise.all(
+        opportunities.map((opp) =>
+          entities.VolunteerCommitment.filter({ opportunity_id: opp.id })
+        )
+      );
+      return all.flat();
+    },
+    enabled: opportunities.length > 0,
     queryKey: ["commitments-business-all", business?.id],
     queryFn: () => entities.VolunteerCommitment.getByBusiness(business.id),
     enabled: !!business?.id,

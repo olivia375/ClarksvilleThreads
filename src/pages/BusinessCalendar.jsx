@@ -95,15 +95,24 @@ export default function BusinessCalendar() {
   const [currentMonth, setCurrentMonth] = useState(new Date());
   const [selectedDateStr, setSelectedDateStr] = useState(format(new Date(), "yyyy-MM-dd"));
 
+  // Discover business by owner UID (works even if user.business_id is not set)
+  const { data: business } = useQuery({
+    queryKey: ["my-business", user?.uid],
+    queryFn: () => entities.Business.getMyBusiness(),
+    enabled: !!user?.uid && !!user?.is_business_owner,
+  });
+
+  const businessId = business?.id || user?.business_id;
+
   const { data: opportunities = [], isLoading: isLoadingOpps } = useQuery({
-    queryKey: ["business_opps_cal", user?.business_id],
-    queryFn: () => entities.VolunteerOpportunity.filter({ business_id: user.business_id }),
-    enabled: !!user?.business_id,
+    queryKey: ["business_opps_cal", businessId],
+    queryFn: () => entities.VolunteerOpportunity.filter({ business_id: businessId }),
+    enabled: !!businessId,
   });
 
   // Fetch all commitments for this business's opportunities
   const { data: allCommitments = [], isLoading: isLoadingCommitments } = useQuery({
-    queryKey: ["business_commitments_cal", user?.business_id, opportunities.map((o) => o.id).join(",")],
+    queryKey: ["business_commitments_cal", businessId, opportunities.map((o) => o.id).join(",")],
     queryFn: async () => {
       const results = await Promise.all(
         opportunities.map((opp) =>
@@ -112,7 +121,7 @@ export default function BusinessCalendar() {
       );
       return results.flat();
     },
-    enabled: !!user?.business_id && opportunities.length > 0,
+    enabled: !!businessId && opportunities.length > 0,
   });
 
   const monthStart = startOfMonth(currentMonth);
