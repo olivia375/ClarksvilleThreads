@@ -13,7 +13,7 @@ import { Switch } from "@/components/ui/switch";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
-import { Building2, CheckCircle, Plus, Trash2, Briefcase, ChevronRight, ChevronLeft, Zap } from "lucide-react";
+import { Building2, CheckCircle, Plus, Trash2, Briefcase, ChevronRight, ChevronLeft, Zap, Gift, X } from "lucide-react";
 
 const CATEGORIES = [
   { value: "food", label: "Food & Restaurants" },
@@ -53,8 +53,10 @@ export default function BusinessSignup() {
     description: "",
     address: "",
     email: "",
-    min_volunteer_age: 0
+    min_volunteer_age: 0,
+    incentives: []
   });
+  const [newIncentive, setNewIncentive] = useState("");
 
   const [opportunities, setOpportunities] = useState([{ ...EMPTY_OPPORTUNITY }]);
   const [error, setError] = useState("");
@@ -100,8 +102,10 @@ export default function BusinessSignup() {
       }
 
       // Create business
+      const { incentives, ...restBusinessData } = businessData;
       const business = await entities.Business.create({
-        ...businessData,
+        ...restBusinessData,
+        incentives: incentives || [],
         verified: false,
         needs_help: true,
         average_rating: 0,
@@ -133,7 +137,8 @@ export default function BusinessSignup() {
       // Update user as business owner
       await updateMe({
         business_id: business.id,
-        is_business_owner: true
+        is_business_owner: true,
+        account_type: "business"
       });
 
       return business;
@@ -343,6 +348,70 @@ export default function BusinessSignup() {
                   className="mt-2"
                 />
                 <p className="text-sm text-gray-500 mt-1">Set to 0 for no age requirement. You can override this per opportunity.</p>
+              </div>
+
+              <div>
+                <Label className="flex items-center gap-2">
+                  <Gift className="w-4 h-4 text-blue-600" />
+                  Volunteer Incentives
+                </Label>
+                <p className="text-sm text-gray-500 mt-1 mb-3">
+                  Add perks or rewards you offer to volunteers (e.g., free meals, discounts, gift cards).
+                </p>
+                <div className="flex gap-2 mb-3">
+                  <Input
+                    value={newIncentive}
+                    onChange={(e) => setNewIncentive(e.target.value)}
+                    placeholder="e.g., 20% discount, Free coffee, Gift card"
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter') {
+                        e.preventDefault();
+                        if (newIncentive.trim()) {
+                          setBusinessData(prev => ({
+                            ...prev,
+                            incentives: [...prev.incentives, newIncentive.trim()]
+                          }));
+                          setNewIncentive("");
+                        }
+                      }
+                    }}
+                  />
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      if (newIncentive.trim()) {
+                        setBusinessData(prev => ({
+                          ...prev,
+                          incentives: [...prev.incentives, newIncentive.trim()]
+                        }));
+                        setNewIncentive("");
+                      }
+                    }}
+                  >
+                    <Plus className="w-4 h-4" />
+                  </Button>
+                </div>
+                {businessData.incentives.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {businessData.incentives.map((incentive, idx) => (
+                      <Badge
+                        key={idx}
+                        className="bg-green-100 text-green-800 flex items-center gap-1 px-3 py-1"
+                      >
+                        <Gift className="w-3 h-3" />
+                        {incentive}
+                        <X
+                          className="w-3 h-3 cursor-pointer ml-1"
+                          onClick={() => setBusinessData(prev => ({
+                            ...prev,
+                            incentives: prev.incentives.filter((_, i) => i !== idx)
+                          }))}
+                        />
+                      </Badge>
+                    ))}
+                  </div>
+                )}
               </div>
 
               <Button type="submit" className="w-full bg-blue-900 hover:bg-blue-800">

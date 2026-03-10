@@ -26,6 +26,7 @@ export const verifyToken = async (req, res, next) => {
         email: decodedToken.email,
         full_name: decodedToken.name || decodedToken.email.split('@')[0],
         picture: decodedToken.picture || null,
+        account_type: null,
         created_at: now,
         updated_at: now,
         total_hours_volunteered: 0,

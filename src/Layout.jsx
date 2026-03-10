@@ -16,16 +16,22 @@ export default function Layout({ children, currentPageName }) {
   const { user, logout, signInWithGoogle } = useAuth();
   const [isOpen, setIsOpen] = React.useState(false);
 
+  const isBusinessAccount = user?.account_type === "business" || user?.is_business_owner;
+
   const navItems = [
     { name: "Home", icon: Home, path: createPageUrl("Home") },
     { name: "Explore", icon: Search, path: createPageUrl("Explore") },
     { name: "Opportunities", icon: Briefcase, path: createPageUrl("Opportunities") },
-    { name: "My Calendar", icon: CalendarIcon, path: createPageUrl("Calendar") },
-    { name: "My Favorites", icon: Heart, path: createPageUrl("Favorites") },
+    ...(isBusinessAccount
+      ? [
+          { name: "Business Dashboard", icon: LayoutDashboard, path: createPageUrl("BusinessDashboard") },
+          { name: "Business Calendar", icon: CalendarIcon, path: createPageUrl("BusinessCalendar") },
+        ]
+      : [
+          { name: "My Calendar", icon: CalendarIcon, path: createPageUrl("Calendar") },
+          { name: "My Favorites", icon: Heart, path: createPageUrl("Favorites") },
+        ]),
     { name: "My Profile", icon: User, path: createPageUrl("Profile") },
-    ...(user?.is_business_owner
-      ? [{ name: "Business Dashboard", icon: LayoutDashboard, path: createPageUrl("BusinessDashboard") }]
-      : []),
   ];
 
   const isActive = (path) => location.pathname === path;

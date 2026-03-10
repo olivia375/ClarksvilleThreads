@@ -47,6 +47,7 @@ export const upsertUser = async (uid, userData) => {
     // Create new user
     await userRef.set({
       ...userData,
+      account_type: userData.account_type || null,
       created_at: now,
       updated_at: now,
       total_hours_volunteered: 0,
@@ -70,6 +71,7 @@ export const updateUser = async (uid, updates) => {
     // Create the user doc if it doesn't exist yet
     await userRef.set({
       ...updates,
+      account_type: updates.account_type || null,
       created_at: now,
       updated_at: now,
       total_hours_volunteered: 0,
