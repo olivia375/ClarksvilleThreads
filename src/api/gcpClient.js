@@ -108,6 +108,9 @@ const createEntityClient = (collection) => ({
 export const entities = {
   Business: {
     ...createEntityClient('businesses'),
+    getMyBusiness: async () => {
+      return apiRequest('/businesses/owner/me');
+    },
     toggleEmailNotifications: async (id, enabled) => {
       return apiRequest(`/businesses/${id}/email-notifications`, {
         method: 'PUT',
@@ -116,7 +119,12 @@ export const entities = {
     }
   },
   VolunteerOpportunity: createEntityClient('opportunities'),
-  VolunteerCommitment: createEntityClient('commitments'),
+  VolunteerCommitment: {
+    ...createEntityClient('commitments'),
+    getByBusiness: async (businessId) => {
+      return apiRequest(`/commitments/business/${businessId}`);
+    }
+  },
   Notification: createEntityClient('notifications'),
   Favorite: createEntityClient('favorites'),
   Review: createEntityClient('reviews')
