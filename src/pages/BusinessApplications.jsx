@@ -47,30 +47,25 @@ export default function BusinessApplications() {
   const [statusFilter, setStatusFilter] = useState("all");
   const [opportunityFilter, setOpportunityFilter] = useState("all");
 
+  // Fetch business by owner (doesn't rely on user.business_id)
   const { data: business, isLoading: isLoadingBusiness } = useQuery({
-    queryKey: ["business", user?.business_id],
-    queryFn: () => entities.Business.get(user.business_id),
-    enabled: !!user?.business_id,
+    queryKey: ["my-business", user?.uid],
+    queryFn: () => entities.Business.getMyBusiness(),
+    enabled: !!user?.is_business_owner,
   });
 
   const { data: opportunities = [] } = useQuery({
-    queryKey: ["opportunities", user?.business_id],
+    queryKey: ["opportunities", business?.id],
     queryFn: () =>
-      entities.VolunteerOpportunity.filter({ business_id: user.business_id }),
-    enabled: !!user?.business_id,
+      entities.VolunteerOpportunity.filter({ business_id: business.id }),
+    enabled: !!business?.id,
   });
 
+  // Use dedicated business commitments endpoint
   const { data: commitments = [], isLoading: isLoadingCommitments } = useQuery({
-    queryKey: ["commitments-business-all", user?.business_id],
-    queryFn: async () => {
-      const all = await Promise.all(
-        opportunities.map((opp) =>
-          entities.VolunteerCommitment.filter({ opportunity_id: opp.id })
-        )
-      );
-      return all.flat();
-    },
-    enabled: opportunities.length > 0,
+    queryKey: ["commitments-business-all", business?.id],
+    queryFn: () => entities.VolunteerCommitment.getByBusiness(business.id),
+    enabled: !!business?.id,
   });
 
   const updateStatusMutation = useMutation({
@@ -90,7 +85,7 @@ export default function BusinessApplications() {
     mutationFn: (enabled) =>
       entities.Business.toggleEmailNotifications(business.id, enabled),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["business"] });
+      queryClient.invalidateQueries({ queryKey: ["my-business"] });
       toast.success("Email notification preference saved");
     },
     onError: (err) => {
