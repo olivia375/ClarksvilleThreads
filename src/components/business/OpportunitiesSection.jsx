@@ -225,21 +225,6 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
         });
       }
 
-      const notificationMessage =
-        status === "confirmed"
-          ? `Your application for "${selectedOpp.title}" at ${business.name} has been automatically confirmed! You're all set to volunteer.`
-          : `Your application for "${selectedOpp.title}" at ${business.name} has been received and is pending review.`;
-
-      await entities.Notification.create({
-        user_email: user.email,
-        type: status === "confirmed" ? "application_approved" : "application_received",
-        title: status === "confirmed" ? "Application Confirmed!" : "Application Submitted",
-        message: notificationMessage,
-        related_commitment_id: commitment.id,
-        related_business_id: business.id,
-        is_read: false,
-      });
-
       if (status === "confirmed") {
         await integrations.Core.SendEmail({
           from_name: "BeyondNeighborly",
