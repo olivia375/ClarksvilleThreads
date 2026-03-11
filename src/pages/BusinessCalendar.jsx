@@ -106,7 +106,7 @@ export default function BusinessCalendar() {
 
   const { data: opportunities = [], isLoading: isLoadingOpps } = useQuery({
     queryKey: ["business_opps_cal", businessId],
-    queryFn: () => entities.VolunteerOpportunity.filter({ business_id: businessId }),
+    queryFn: () => entities.VolunteerOpportunity.getByBusiness(businessId),
     enabled: !!businessId,
   });
 

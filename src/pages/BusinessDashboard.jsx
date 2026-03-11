@@ -47,7 +47,7 @@ export default function BusinessDashboard() {
 
   const { data: opportunities = [], isLoading: isLoadingOpportunities } = useQuery({
     queryKey: ["opportunities", businessId],
-    queryFn: () => entities.VolunteerOpportunity.filter({ business_id: businessId }),
+    queryFn: () => entities.VolunteerOpportunity.getByBusiness(businessId),
     enabled: !!businessId,
   });
 

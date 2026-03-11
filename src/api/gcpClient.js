@@ -118,7 +118,12 @@ export const entities = {
       });
     }
   },
-  VolunteerOpportunity: createEntityClient('opportunities'),
+  VolunteerOpportunity: {
+    ...createEntityClient('opportunities'),
+    getByBusiness: async (businessId) => {
+      return apiRequest(`/opportunities/business/${businessId}`);
+    }
+  },
   VolunteerCommitment: {
     ...createEntityClient('commitments'),
     getByBusiness: async (businessId) => {

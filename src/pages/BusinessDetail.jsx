@@ -28,11 +28,13 @@ export default function BusinessDetail() {
     enabled: !!businessId
   });
 
-  const { data: opportunities = [] } = useQuery({
+  const { data: allOpportunities = [] } = useQuery({
     queryKey: ['opportunities', businessId],
-    queryFn: () => entities.VolunteerOpportunity.filter({ business_id: businessId, status: "open" }),
+    queryFn: () => entities.VolunteerOpportunity.getByBusiness(businessId),
     enabled: !!businessId
   });
+
+  const opportunities = allOpportunities.filter(opp => opp.status === "open");
 
   const { data: isFavorited = false } = useQuery({
     queryKey: ['favorite', businessId, user?.email],

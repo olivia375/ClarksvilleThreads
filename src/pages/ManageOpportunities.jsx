@@ -628,7 +628,7 @@ export default function ManageOpportunities() {
 
   const { data: opportunities = [], isLoading } = useQuery({
     queryKey: ["opportunities", businessId],
-    queryFn: () => entities.VolunteerOpportunity.filter({ business_id: businessId }),
+    queryFn: () => entities.VolunteerOpportunity.getByBusiness(businessId),
     enabled: !!businessId,
   });
 
