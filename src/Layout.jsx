@@ -32,9 +32,6 @@ export default function Layout({ children, currentPageName }) {
           { name: "My Favorites", icon: Heart, path: createPageUrl("Favorites") },
         ]),
     { name: "My Profile", icon: User, path: createPageUrl("Profile") },
-    ...(user?.is_business_owner
-      ? [{ name: "Business Dashboard", icon: LayoutDashboard, path: createPageUrl("BusinessDashboard") }]
-      : []),
     ...(user?.is_admin
       ? [{ name: "Admin", icon: ShieldCheck, path: createPageUrl("AdminDashboard") }]
       : []),
