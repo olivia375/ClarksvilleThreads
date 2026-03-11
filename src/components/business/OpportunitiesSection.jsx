@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Clock, Tag, Briefcase, MapPin, Calendar, Users, Zap, User, Repeat, CalendarDays } from "lucide-react";
+import { Clock, Tag, Briefcase, MapPin, Calendar, Users, Zap, User, Repeat, CalendarDays, Heart } from "lucide-react";
 import { format, parseISO, eachDayOfInterval, addDays } from "date-fns";
 
 const DAY_LABELS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -370,18 +370,10 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
                       )}
                     </div>
                   </div>
-                  {user && (
-                    <Button
-                      onClick={() => {
-                        setSelectedOpp(opp);
-                        setApplicationData({ hours_committed: "", start_date: "", notes: "" });
-                        setShowApplyDialog(true);
-                      }}
-                      disabled={isFull}
-                      className="bg-blue-900 hover:bg-blue-800 flex-shrink-0"
-                    >
-                      {isFull ? "Full" : "Apply Now"}
-                    </Button>
+                  {user && !isFull && (
+                    <Badge className="bg-green-100 text-green-700 cursor-default">
+                      Open
+                    </Badge>
                   )}
                 </div>
               </CardHeader>
@@ -460,6 +452,39 @@ export default function OpportunitiesSection({ opportunities, business, user }) 
                   </Alert>
                 )}
               </CardContent>
+
+              {/* Prominent Volunteer Button */}
+              <div className="px-6 pb-6">
+                {user ? (
+                  <Button
+                    onClick={() => {
+                      setSelectedOpp(opp);
+                      setApplicationData({ hours_committed: "", start_date: "", notes: "" });
+                      setShowApplyDialog(true);
+                    }}
+                    disabled={isFull}
+                    className={
+                      isFull
+                        ? "w-full py-6 text-lg font-semibold"
+                        : "w-full py-6 text-lg font-semibold bg-blue-900 hover:bg-blue-800 shadow-md hover:shadow-lg transition-all"
+                    }
+                    size="lg"
+                  >
+                    {isFull ? (
+                      "Opportunity Full"
+                    ) : (
+                      <>
+                        <Heart className="w-5 h-5 mr-2" />
+                        Volunteer Now
+                      </>
+                    )}
+                  </Button>
+                ) : (
+                  <p className="text-center text-sm text-gray-500 py-3 bg-gray-50 rounded-lg">
+                    Sign in to volunteer for this opportunity
+                  </p>
+                )}
+              </div>
             </Card>
           );
         })
