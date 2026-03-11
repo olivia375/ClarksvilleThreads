@@ -3,21 +3,25 @@ import { Link } from "react-router-dom";
 import { createPageUrl } from "@/utils";
 import { useAuth } from "@/lib/FirebaseAuthContext";
 import { entities } from "@/api/gcpClient";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
 import {
   Building2,
   Briefcase,
   Users,
   Clock,
   CheckCircle,
+  XCircle,
   AlertCircle,
   Plus,
   Settings,
   Calendar,
   FileText,
+  Mail,
+  User,
 } from "lucide-react";
 
 const URGENCY_COLORS = {
@@ -51,17 +55,25 @@ export default function BusinessDashboard() {
     enabled: !!businessId,
   });
 
+  const queryClient = useQueryClient();
+
   const { data: commitments = [] } = useQuery({
     queryKey: ["commitments-business", businessId],
-    queryFn: async () => {
-      const all = await Promise.all(
-        opportunities.map((opp) =>
-          entities.VolunteerCommitment.filter({ opportunity_id: opp.id })
-        )
-      );
-      return all.flat();
+    queryFn: () => entities.VolunteerCommitment.getByBusiness(businessId),
+    enabled: !!businessId,
+  });
+
+  const updateStatusMutation = useMutation({
+    mutationFn: ({ id, status }) =>
+      entities.VolunteerCommitment.update(id, { status }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["commitments-business"] });
+      queryClient.invalidateQueries({ queryKey: ["commitments-business-all"] });
+      toast.success("Application status updated");
     },
-    enabled: opportunities.length > 0,
+    onError: (err) => {
+      toast.error("Failed to update: " + err.message);
+    },
   });
 
   if (isLoadingAuth) {
@@ -198,19 +210,110 @@ export default function BusinessDashboard() {
         </Card>
       </div>
 
-      {/* Pending Applications Alert */}
+      {/* Pending Applications */}
       {pendingCommitments.length > 0 && (
-        <Link to={createPageUrl("BusinessApplications")} className="block mb-6">
-          <div className="flex items-center justify-between p-4 bg-yellow-50 border border-yellow-200 rounded-lg hover:bg-yellow-100 transition-colors">
-            <div className="flex items-center gap-3">
-              <AlertCircle className="w-5 h-5 text-yellow-600 flex-shrink-0" />
-              <p className="text-yellow-800 text-sm font-medium">
-                You have {pendingCommitments.length} pending volunteer application{pendingCommitments.length > 1 ? "s" : ""} awaiting review.
-              </p>
+        <Card className="border-none shadow-sm mb-6">
+          <CardHeader>
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 bg-yellow-50 rounded-lg flex items-center justify-center">
+                  <AlertCircle className="w-4 h-4 text-yellow-600" />
+                </div>
+                <CardTitle className="text-xl">
+                  Pending Applications ({pendingCommitments.length})
+                </CardTitle>
+              </div>
+              <Link to={createPageUrl("BusinessApplications")}>
+                <Button variant="outline" size="sm">
+                  View All Applications
+                </Button>
+              </Link>
             </div>
-            <span className="text-yellow-700 text-sm font-medium">Review &rarr;</span>
-          </div>
-        </Link>
+          </CardHeader>
+          <CardContent>
+            <div className="divide-y divide-gray-100">
+              {pendingCommitments
+                .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+                .map((commitment) => (
+                  <div key={commitment.id} className="py-4">
+                    <div className="flex items-start justify-between gap-4">
+                      <div className="min-w-0 flex-1">
+                        <div className="flex items-center gap-2 flex-wrap mb-1">
+                          <span className="font-medium text-gray-900">
+                            {commitment.volunteer_name || "Unknown Volunteer"}
+                          </span>
+                          <Badge className="text-xs bg-yellow-100 text-yellow-700">
+                            Pending
+                          </Badge>
+                        </div>
+                        <p className="text-sm text-blue-700 font-medium mb-2">
+                          {commitment.opportunity_title || "Unknown Opportunity"}
+                        </p>
+                        <div className="flex items-center gap-4 text-xs text-gray-500 flex-wrap">
+                          <span className="flex items-center gap-1">
+                            <Mail className="w-3.5 h-3.5" />
+                            {commitment.volunteer_email}
+                          </span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3.5 h-3.5" />
+                            {commitment.hours_committed}h committed
+                          </span>
+                          {commitment.start_date && (
+                            <span className="flex items-center gap-1">
+                              <Calendar className="w-3.5 h-3.5" />
+                              {new Date(commitment.start_date).toLocaleDateString()}
+                            </span>
+                          )}
+                          <span className="flex items-center gap-1">
+                            <User className="w-3.5 h-3.5" />
+                            Applied{" "}
+                            {new Date(commitment.created_at).toLocaleDateString()}
+                          </span>
+                        </div>
+                        {commitment.notes && (
+                          <p className="mt-2 text-sm text-gray-600 bg-gray-50 rounded-md p-2">
+                            <span className="font-medium">Notes:</span>{" "}
+                            {commitment.notes}
+                          </p>
+                        )}
+                      </div>
+                      <div className="flex gap-2 flex-shrink-0">
+                        <Button
+                          size="sm"
+                          className="bg-green-600 hover:bg-green-700 text-white"
+                          disabled={updateStatusMutation.isPending}
+                          onClick={() =>
+                            updateStatusMutation.mutate({
+                              id: commitment.id,
+                              status: "confirmed",
+                            })
+                          }
+                        >
+                          <CheckCircle className="w-4 h-4 mr-1" />
+                          Approve
+                        </Button>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          className="text-red-600 border-red-200 hover:bg-red-50"
+                          disabled={updateStatusMutation.isPending}
+                          onClick={() =>
+                            updateStatusMutation.mutate({
+                              id: commitment.id,
+                              status: "rejected",
+                            })
+                          }
+                        >
+                          <XCircle className="w-4 h-4 mr-1" />
+                          Decline
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Opportunities */}
