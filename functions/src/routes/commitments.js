@@ -88,8 +88,8 @@ router.post('/', verifyToken, async (req, res, next) => {
     }
 
     // Prevent duplicate commitments for the same volunteer + opportunity
-    const existingCommitments = await commitmentService.getCommitmentsByOpportunity(opportunity_id);
-    const alreadyApplied = existingCommitments.find(
+    const duplicateCheck = await commitmentService.getCommitmentsByOpportunity(opportunity_id);
+    const alreadyApplied = duplicateCheck.find(
       c => c.volunteer_email === user.email && ['pending', 'confirmed', 'in_progress'].includes(c.status)
     );
     if (alreadyApplied) {
