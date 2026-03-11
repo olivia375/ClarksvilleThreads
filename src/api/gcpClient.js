@@ -234,24 +234,10 @@ const adminOrFallback = async (adminPath, fallbackPath) => {
  * List endpoints fall back to regular entity endpoints when admin routes are not deployed
  */
 export const adminClient = {
-  getStats: async () => {
-    try {
-      return await apiRequest('/admin/stats');
-    } catch {
-      // Admin stats endpoint not deployed — return null so the UI computes from list data
-      return null;
-    }
-  },
+  getStats: () => apiRequest('/admin/stats'),
 
   // Users
-  listUsers: async () => {
-    try {
-      return await apiRequest('/admin/users');
-    } catch {
-      // No fallback for users list — admin routes required
-      return [];
-    }
-  },
+  listUsers: () => apiRequest('/admin/users'),
   getUser: (uid) => apiRequest(`/admin/users/${uid}`),
   updateUser: (uid, data) => apiRequest(`/admin/users/${uid}`, { method: 'PUT', body: JSON.stringify(data) }),
   deleteUser: (uid) => apiRequest(`/admin/users/${uid}`, { method: 'DELETE' }),

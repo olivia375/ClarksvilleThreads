@@ -92,8 +92,18 @@ export const updateUser = async (uid, updates) => {
  * List all users (admin only)
  */
 export const listUsers = async (limit = 100) => {
-  const snapshot = await db.collection(collections.users)
+  // First try ordered query — this excludes docs without created_at
+  const orderedSnapshot = await db.collection(collections.users)
     .orderBy('created_at', 'desc')
+    .limit(limit)
+    .get();
+
+  if (orderedSnapshot.size > 0) {
+    return orderedSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  }
+
+  // Fallback: list without ordering to catch docs that lack created_at
+  const snapshot = await db.collection(collections.users)
     .limit(limit)
     .get();
 

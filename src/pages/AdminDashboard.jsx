@@ -65,15 +65,17 @@ function ErrorBanner({ error, label }) {
 }
 
 function StatsOverview() {
-  const { data: stats, isLoading: statsLoading } = useQuery({
+  const { data: stats } = useQuery({
     queryKey: ["admin", "stats"],
     queryFn: adminClient.getStats,
+    retry: 1,
   });
 
-  // Use list data to compute stats when admin stats endpoint isn't deployed
+  // Use list data to compute stats as fallback
   const { data: users = [] } = useQuery({
     queryKey: ["admin", "users"],
     queryFn: adminClient.listUsers,
+    retry: 1,
   });
   const { data: businesses = [] } = useQuery({
     queryKey: ["admin", "businesses"],
@@ -84,14 +86,15 @@ function StatsOverview() {
     queryFn: adminClient.listOpportunities,
   });
 
+  // Use || so that a 0 from a failed/empty count falls through to list length
   const computedStats = {
-    total_users: stats?.total_users ?? users.length,
-    total_businesses: stats?.total_businesses ?? businesses.length,
-    total_opportunities: stats?.total_opportunities ?? opportunities.length,
-    total_commitments: stats?.total_commitments ?? 0,
+    total_users: stats?.total_users || users.length,
+    total_businesses: stats?.total_businesses || businesses.length,
+    total_opportunities: stats?.total_opportunities || opportunities.length,
+    total_commitments: stats?.total_commitments || 0,
   };
 
-  const isLoading = statsLoading && users.length === 0 && businesses.length === 0;
+  const isLoading = !stats && users.length === 0 && businesses.length === 0;
 
   const cards = [
     { label: "Users", value: computedStats.total_users, icon: Users, color: "text-blue-600 bg-blue-100" },
@@ -156,6 +159,7 @@ function UsersTab() {
   const { data: users = [], isLoading, error } = useQuery({
     queryKey: ["admin", "users"],
     queryFn: adminClient.listUsers,
+    retry: 1,
   });
 
   const updateMutation = useMutation({
