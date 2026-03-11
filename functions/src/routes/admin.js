@@ -196,18 +196,23 @@ router.delete('/opportunities/:id', async (req, res, next) => {
  */
 router.get('/stats', async (req, res, next) => {
   try {
-    const [usersSnap, businessesSnap, opportunitiesSnap, commitmentsSnap] = await Promise.all([
-      db.collection(collections.users).count().get(),
-      db.collection(collections.businesses).count().get(),
-      db.collection(collections.volunteerOpportunities).count().get(),
-      db.collection(collections.volunteerCommitments).count().get(),
+    const safeCount = (collectionName) =>
+      db.collection(collectionName).count().get()
+        .then(snap => snap.data().count)
+        .catch(() => 0);
+
+    const [total_users, total_businesses, total_opportunities, total_commitments] = await Promise.all([
+      safeCount(collections.users),
+      safeCount(collections.businesses),
+      safeCount(collections.volunteerOpportunities),
+      safeCount(collections.volunteerCommitments),
     ]);
 
     res.json({
-      total_users: usersSnap.data().count,
-      total_businesses: businessesSnap.data().count,
-      total_opportunities: opportunitiesSnap.data().count,
-      total_commitments: commitmentsSnap.data().count,
+      total_users,
+      total_businesses,
+      total_opportunities,
+      total_commitments,
     });
   } catch (error) {
     next(error);

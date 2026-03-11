@@ -22,7 +22,7 @@ export const verifyToken = async (req, res, next) => {
     const userDoc = await userRef.get();
     if (!userDoc.exists) {
       const now = new Date().toISOString();
-      await userRef.set({
+      const newUserData = {
         email: decodedToken.email,
         full_name: decodedToken.name || decodedToken.email.split('@')[0],
         picture: decodedToken.picture || null,
@@ -31,7 +31,19 @@ export const verifyToken = async (req, res, next) => {
         updated_at: now,
         total_hours_volunteered: 0,
         verified_volunteer: false
-      });
+      };
+      await userRef.set(newUserData);
+      req.userDoc = { id: decodedToken.uid, ...newUserData };
+    } else {
+      const userData = userDoc.data();
+      // Backfill created_at if missing (ensures user appears in ordered queries)
+      if (!userData.created_at) {
+        const now = new Date().toISOString();
+        await userRef.update({ created_at: now, updated_at: now });
+        userData.created_at = now;
+        userData.updated_at = now;
+      }
+      req.userDoc = { id: userDoc.id, ...userData };
     }
 
     next();
@@ -75,11 +87,18 @@ export const requireAdmin = async (req, res, next) => {
   }
 
   try {
-    const userDoc = await db.collection(collections.users).doc(req.user.uid).get();
-    if (!userDoc.exists || !userDoc.data().is_admin) {
-      return res.status(403).json({ error: 'Admin access required' });
+    // Use user doc already fetched by verifyToken if available
+    if (req.userDoc && req.userDoc.is_admin) {
+      return next();
     }
-    next();
+
+    // Fallback: read from Firestore directly
+    const userDoc = await db.collection(collections.users).doc(req.user.uid).get();
+    if (userDoc.exists && userDoc.data().is_admin) {
+      return next();
+    }
+
+    return res.status(403).json({ error: 'Admin access required' });
   } catch (error) {
     console.error('Admin check failed:', error);
     return res.status(500).json({ error: 'Failed to verify admin status' });
